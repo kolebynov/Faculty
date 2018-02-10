@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Faculty.EFCore.Data;
 using Microsoft.EntityFrameworkCore;
+using Faculty.Web.Infrastructure;
 
 namespace Faculty.Web
 {
@@ -26,6 +27,8 @@ namespace Faculty.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<FacultyContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Main")));
+            services.AddSingleton<IMapper, Mapper>();
+
             services.AddMvc();
         }
 

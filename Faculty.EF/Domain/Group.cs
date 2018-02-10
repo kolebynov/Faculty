@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Faculty.EFCore.Domain
 {
-    public class Group : BaseEntity
+    public class Group : BaseLookup
     {
-        public string Number { get; set; }
+        public Guid SpecialtyId { get; set; }
+
+        public Specialty Specialty { get; set; }
     }
 }

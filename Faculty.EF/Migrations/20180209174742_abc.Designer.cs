@@ -11,9 +11,10 @@ using System;
 namespace Faculty.EFCore.Migrations
 {
     [DbContext(typeof(FacultyContext))]
-    partial class FacultyContextModelSnapshot : ModelSnapshot
+    [Migration("20180209174742_abc")]
+    partial class abc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,6 +56,8 @@ namespace Faculty.EFCore.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Abc");
 
                     b.Property<string>("Name")
                         .HasMaxLength(250);

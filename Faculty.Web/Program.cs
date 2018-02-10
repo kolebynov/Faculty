@@ -7,6 +7,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Faculty.Web.Infrastructure;
+using Faculty.Web.Model;
+using Faculty.EFCore.Domain;
 
 namespace Faculty.Web
 {

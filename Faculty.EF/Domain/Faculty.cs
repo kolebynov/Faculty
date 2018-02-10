@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Faculty.EFCore.Domain
 {
-    public class Teacher : BaseLookup
+    public class Faculty : BaseLookup
     {
-        
     }
 }

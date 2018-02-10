@@ -11,9 +11,10 @@ using System;
 namespace Faculty.EFCore.Migrations
 {
     [DbContext(typeof(FacultyContext))]
-    partial class FacultyContextModelSnapshot : ModelSnapshot
+    [Migration("20180209174923_removeabc")]
+    partial class removeabc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
