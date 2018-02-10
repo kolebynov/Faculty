@@ -9,7 +9,8 @@ namespace Faculty.EFCore.Repository
     {
         IQueryable<TEntity> Entities { get; }
 
-        Task UpdateAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
         Task<TEntity> GetByIdAsync(Guid id);
     }
