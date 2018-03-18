@@ -1,12 +1,12 @@
-﻿using Faculty.EFCore.Data;
-using Faculty.EFCore.Domain;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Faculty.EFCore.Domain;
+using Microsoft.EntityFrameworkCore;
+using Faculty.Core.Data;
 
-namespace Faculty.EFCore.Repository
+namespace Faculty.EFCore.Data
 {
     public class EFRepository<TEntity> : IRepository<TEntity> 
         where TEntity : BaseEntity
@@ -50,7 +50,7 @@ namespace Faculty.EFCore.Repository
             return foundEntity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(object id)
         {
             TEntity entity = DbSet.Find(id);
             if (entity != null)
@@ -60,7 +60,7 @@ namespace Faculty.EFCore.Repository
             }
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id) =>
+        public async Task<TEntity> GetByIdAsync(object id) =>
             await DbSet.FindAsync(id);
 
         private void CopyProperties(TEntity destEntity, TEntity srcEntity)

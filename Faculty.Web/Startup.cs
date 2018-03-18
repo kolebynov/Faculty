@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Faculty.Core.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,7 @@ namespace Faculty.Web
         {
             services.AddDbContext<FacultyContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Main")));
             services.AddSingleton<IMapper, Mapper>();
+            services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 
             services.AddMvc();
         }
@@ -40,7 +42,14 @@ namespace Faculty.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapSpaFallbackRoute("spa", new
+                {
+                    controller = "Home",
+                    action = "Index"
+                });
+            });
         }
     }
 }
