@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Faculty.Core.Data;
+using Faculty.EFCore.Data;
 using Faculty.Web.ApiResults;
 using Faculty.Web.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +20,7 @@ namespace Faculty.Web.Controllers.Api
         [HttpGet("{id?}")]
         public virtual async Task<IActionResult> GetItems(TId id)
         {
-            return Json(await GetItemsFromQuery(id));
+            return Json(await GetItemsFromRepository(id));
         }
 
         [HttpPost]
@@ -66,7 +66,7 @@ namespace Faculty.Web.Controllers.Api
             Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        protected virtual async Task<ApiResult<TModel[]>> GetItemsFromQuery(TId id)
+        protected virtual async Task<ApiResult<TModel[]>> GetItemsFromRepository(TId id)
         {
             TEntity[] entities = !id.Equals(default(TId)) ? new[] { await EntityRepository.GetByIdAsync(id) } : EntityRepository.Entities.ToArray();
 

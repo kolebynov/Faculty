@@ -17,6 +17,11 @@ namespace Faculty.Web.Infrastructure
             return AutoMapper.Mapper.Map<T, V>(src);
         }
 
+        public object Map(object src, Type srcType, Type destType)
+        {
+            return AutoMapper.Mapper.Map(src, srcType, destType);
+        }
+
         static Mapper()
         {
             InitMapper();
@@ -43,7 +48,31 @@ namespace Faculty.Web.Infrastructure
                 Type modelType = Array.Find(modelTypes, t => t.Name == entityType.Name + "Dto");
                 if (modelType != null)
                 {
-                    config.CreateMap(entityType, modelType);
+                    MapEntityToModel(config, entityType, modelType);
+                    MapModelToEntity(config, entityType, modelType);
+                }
+            }
+        }
+
+        private static void MapEntityToModel(IMapperConfigurationExpression config, Type entityType, Type modelType)
+        {
+            config.CreateMap(entityType, modelType);
+        }
+
+        private static void MapModelToEntity(IMapperConfigurationExpression config, Type entityType, Type modelType)
+        {
+            var mappingExpr = config.CreateMap(modelType, entityType);
+            var allModelProps = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var idsProps = entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(prop => prop.Name.EndsWith("Id") && prop.PropertyType == typeof(Guid));
+            foreach (var idProp in idsProps)
+            {
+                var propName = idProp.Name.Remove(idProp.Name.Length - 2);
+                var modelNameValuePairProp = Array.Find(allModelProps, prop => prop.Name == propName);
+                if (modelNameValuePairProp != null)
+                {
+                    mappingExpr.ForMember(idProp.Name, opt => opt.MapFrom(
+                        src => ((NameValuePair<Guid>)modelNameValuePairProp.GetValue(src)).Value));
                 }
             }
         }

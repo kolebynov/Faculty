@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Faculty.EFCore.Domain;
 using Microsoft.EntityFrameworkCore;
-using Faculty.Core.Data;
 
 namespace Faculty.EFCore.Data
 {

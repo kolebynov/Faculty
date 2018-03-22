@@ -27,7 +27,12 @@ namespace Faculty.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FacultyContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Main")));
+            services.AddDbContext<FacultyContext>(opt =>
+            {
+                opt
+                    //.UseSqlServer(Configuration.GetConnectionString("Main"))
+                    .UseInMemoryDatabase("db");
+            });
             services.AddSingleton<IMapper, Mapper>();
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 
