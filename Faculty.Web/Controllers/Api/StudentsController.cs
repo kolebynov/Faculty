@@ -11,11 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Faculty.Web.Controllers.Api
 {
-    [Produces("application/json")]
-    [Route("api/Students")]
-    public class StudentsController : BaseApiController<Student, StudentDto, Guid>
+    [Route("api/students")]
+    public class StudentsController : BaseApiController<Student, Guid>
     {
-        public StudentsController(IRepository<Student> repository, IMapper mapper) : base(repository, mapper)
+        public StudentsController(IRepository<Student> repository) : base(repository)
         {
         }
 

@@ -12,10 +12,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Faculty.Web.Controllers.Api
 {
     [Produces("application/json")]
-    public abstract class BaseApiController<TEntity, TModel, TId> : Controller
+    public abstract class BaseApiController<TEntity, TId> : Controller
     {
         public IRepository<TEntity> EntityRepository { get; }
-        public IMapper Mapper { get; }
 
         [HttpGet("{id?}")]
         public virtual async Task<IActionResult> GetItems(TId id)
@@ -24,25 +23,25 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> AddItem([FromBody] TModel item)
+        public virtual async Task<IActionResult> AddItem([FromBody] TEntity item)
         {
             if (ModelState.IsValid)
             {
-                TEntity newItem = await EntityRepository.AddAsync(Mapper.Map<TModel, TEntity>(item));
+                TEntity newItem = await EntityRepository.AddAsync(item);
                 return CreatedAtAction("GetItems", new { id = IdSelector(newItem) },
-                    ApiResult.SuccessResult(new[] { Mapper.Map<TEntity, TModel>(newItem) }));
+                    ApiResult.SuccessResult(new[] { newItem }));
             }
 
             return Json(GetErrorResultFromModelState(ModelState));
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> UpdateItem(TId id, [FromBody] TModel item)
+        public virtual async Task<IActionResult> UpdateItem(TId id, [FromBody] TEntity item)
         {
             if (ModelState.IsValid)
             {
-                TEntity updatedEntity = await EntityRepository.UpdateAsync(Mapper.Map<TModel, TEntity>(item));
-                return CreatedAtAction("GetItems", new { id }, ApiResult.SuccessResult(new[] { Mapper.Map<TEntity, TModel>(updatedEntity) }));
+                TEntity updatedEntity = await EntityRepository.UpdateAsync(item);
+                return CreatedAtAction("GetItems", new { id }, ApiResult.SuccessResult(new[] { updatedEntity }));
             }
 
             return Json(GetErrorResultFromModelState(ModelState));
@@ -60,17 +59,16 @@ namespace Faculty.Web.Controllers.Api
             return Json(GetErrorResultFromModelState(ModelState));
         }
 
-        protected BaseApiController(IRepository<TEntity> repository, IMapper mapper)
+        protected BaseApiController(IRepository<TEntity> repository)
         {
             EntityRepository = repository ?? throw new ArgumentNullException(nameof(repository));
-            Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        protected virtual async Task<ApiResult<TModel[]>> GetItemsFromRepository(TId id)
+        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id)
         {
             TEntity[] entities = !id.Equals(default(TId)) ? new[] { await EntityRepository.GetByIdAsync(id) } : EntityRepository.Entities.ToArray();
 
-            return ApiResult.SuccessResult(Mapper.Map<TEntity[], TModel[]>(entities));
+            return ApiResult.SuccessResult(entities);
         }
 
         protected abstract TId IdSelector(TEntity entity);
