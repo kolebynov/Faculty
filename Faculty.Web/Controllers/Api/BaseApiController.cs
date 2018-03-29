@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Faculty.EFCore.Data;
+using Faculty.EFCore.Infrastucture;
 using Faculty.Web.ApiResults;
 using Faculty.Web.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +16,16 @@ namespace Faculty.Web.Controllers.Api
     [Produces("application/json")]
     public abstract class BaseApiController<TEntity, TId> : Controller
     {
+        private readonly IEntityExpressionsBuilder _entityExpressionsBuilder;
+        private Func<TEntity, TId> _idSelector;
+
         public IRepository<TEntity> EntityRepository { get; }
+
+        protected virtual Func<TEntity, TId> IdSelector
+        {
+            get => _idSelector ?? (_idSelector = CreateIdSelector());
+            set => _idSelector = value;
+        }
 
         [HttpGet("{id?}")]
         public virtual async Task<IActionResult> GetItems(TId id)
@@ -59,9 +70,10 @@ namespace Faculty.Web.Controllers.Api
             return Json(GetErrorResultFromModelState(ModelState));
         }
 
-        protected BaseApiController(IRepository<TEntity> repository)
+        protected BaseApiController(IRepository<TEntity> repository, IEntityExpressionsBuilder entityExpressionsBuilder)
         {
             EntityRepository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
         protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id)
@@ -71,7 +83,8 @@ namespace Faculty.Web.Controllers.Api
             return ApiResult.SuccessResult(entities);
         }
 
-        protected abstract TId IdSelector(TEntity entity);
+        protected virtual Func<TEntity, TId> CreateIdSelector() =>
+            _entityExpressionsBuilder.GetIdSelectorExpression<TEntity, TId>().Compile();
 
         private ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
         {

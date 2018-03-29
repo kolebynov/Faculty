@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Faculty.EFCore.Data;
+using Faculty.EFCore.Infrastucture;
 using Microsoft.EntityFrameworkCore;
 using Faculty.Web.Infrastructure;
 
@@ -33,6 +34,7 @@ namespace Faculty.Web
                     .UseInMemoryDatabase("db");
             });
             services.AddSingleton<IMapper, Mapper>();
+            services.AddSingleton<IEntityExpressionsBuilder, EntityExpressionsBuilder>();
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 
             services.AddMvc();

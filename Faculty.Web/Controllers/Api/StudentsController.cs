@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Faculty.EFCore.Data;
 using Faculty.EFCore.Domain;
+using Faculty.EFCore.Infrastucture;
 using Faculty.Web.Infrastructure;
 using Faculty.Web.Model;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +15,9 @@ namespace Faculty.Web.Controllers.Api
     [Route("api/students")]
     public class StudentsController : BaseApiController<Student, Guid>
     {
-        public StudentsController(IRepository<Student> repository) : base(repository)
+        public StudentsController(IRepository<Student> repository, IEntityExpressionsBuilder entityExpressionsBuilder) 
+            : base(repository, entityExpressionsBuilder)
         {
         }
-
-        protected override Guid IdSelector(Student entity) => entity.Id;
     }
 }
