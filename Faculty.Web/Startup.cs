@@ -12,6 +12,7 @@ using Faculty.EFCore.Data;
 using Faculty.EFCore.Infrastucture;
 using Microsoft.EntityFrameworkCore;
 using Faculty.Web.Infrastructure;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace Faculty.Web
 {
@@ -46,6 +47,10 @@ namespace Faculty.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                {
+                    EnvironmentVariables = { { "env", "dev" } }
+                });
             }
 
             app.UseMvc(routes =>
