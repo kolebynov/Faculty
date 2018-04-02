@@ -1,7 +1,7 @@
 ﻿const path = require("path");
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
+//const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
 const bundleOutputDir = "./wwwroot/dist";
 
 module.exports = (env) => {
