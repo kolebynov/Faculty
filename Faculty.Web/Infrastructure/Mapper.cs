@@ -31,9 +31,9 @@ namespace Faculty.Web.Infrastructure
         {
             AutoMapper.Mapper.Initialize(config =>
             {
-                config.CreateMap<BaseLookup, NameValuePair<Guid>>()
+                /*config.CreateMap<BaseLookup, NameValuePair<Guid>>()
                     .ConvertUsing(lookup => new NameValuePair<Guid>(lookup.Name, lookup.Id));
-                InitEntityMappings(config);
+                InitEntityMappings(config);*/
             });
         }
 
