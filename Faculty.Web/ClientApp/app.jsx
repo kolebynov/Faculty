@@ -5,8 +5,8 @@ import { Switch, Route } from "react-router-dom";
 
 const App = () => (
     <Switch>
-        <Route path = "/login" component = {LoginPage} />   
-        <Route path = "/" component = {MainPage} /> 
+        <Route path = "/login" component = {LoginPage} />
+        <Route path = "/" component = {MainPage} />
     </Switch>
 )
 
