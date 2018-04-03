@@ -6,6 +6,7 @@ const schemas = [
         name: "Student",
         primaryColumnName: "id",
         displayColumnName: "name",
+        resourceName: "students",
         columns: [
             {
                 name: "id",

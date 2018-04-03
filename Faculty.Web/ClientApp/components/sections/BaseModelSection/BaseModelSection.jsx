@@ -1,17 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ModelSchemaProvider from "../../../schemas/ModelSchemaProvider";
+import modelSchemaProvider from "../../../schemas/ModelSchemaProvider";
+import DataGrid from "../../DataGrid/DataGrid.jsx";
 
 class BaseModelSection extends React.Component {
-    constructor() {
-        super();
-        this._modelSchemaProvider = new ModelSchemaProvider();
-    }
-
     render() {
         return (
             <div>
-                {JSON.stringify(this._modelSchemaProvider.getSchemaByName(this.props.modelName))}
+                <DataGrid modelName={this.props.modelName} />
             </div>
         );
     }

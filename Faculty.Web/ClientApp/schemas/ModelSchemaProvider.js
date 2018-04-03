@@ -16,4 +16,4 @@ class ModelSchemaProvider {
     }
 }
 
-export default ModelSchemaProvider;
+export default new ModelSchemaProvider();
