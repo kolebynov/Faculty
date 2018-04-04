@@ -32,7 +32,7 @@ namespace Faculty.Web
             {
                 opt
                     //.UseSqlServer(Configuration.GetConnectionString("Main"))
-                    .UseInMemoryDatabase("db");
+                    .UseInMemoryDatabase("db_inmemory");
             });
             services.AddSingleton<IMapper, Mapper>();
             services.AddSingleton<IEntityExpressionsBuilder, EntityExpressionsBuilder>();
