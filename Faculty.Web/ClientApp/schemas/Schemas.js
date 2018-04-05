@@ -10,20 +10,46 @@ const schemas = [
         columns: [
             {
                 name: "id",
-                type: DataTypes.TEXT
+                type: DataTypes.TEXT,
             },
             {
                 name: "name",
-                type: DataTypes.TEXT
+                type: DataTypes.TEXT,
+                caption: "Имя"
             },
             {
                 name: "firstName",
-                type: DataTypes.TEXT
+                type: DataTypes.TEXT,
+                caption: "Фамилия"
             },
             {
                 name: "group",
                 type: DataTypes.LOOKUP,
-                referenceSchemaName: "Group"
+                referenceSchemaName: "Group",
+                caption: "Группа"
+            }
+        ]
+    }),
+    new ModelSchema({
+        name: "Group",
+        primaryColumnName: "id",
+        displayColumnName: "name",
+        resourceName: "groups",
+        columns: [
+            {
+                name: "id",
+                type: DataTypes.TEXT
+            },
+            {
+                name: "name",
+                type: DataTypes.TEXT,
+                caption: "Имя"
+            },
+            {
+                name: "specialty",
+                type: DataTypes.LOOKUP,
+                referenceSchemaName: "Specialty",
+                caption: "Специальность"
             }
         ]
     })

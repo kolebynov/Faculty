@@ -1,8 +1,8 @@
 import queryString from "query-string";
 
 class ApiService {
-    constructor(name) {
-        this.apiRoute = `/api/${name}`;
+    constructor(resourceName) {
+        this.apiRoute = `/api/${resourceName}`;
         this._defaultRequestOptions = {
             credentials: "include",
             headers: {
