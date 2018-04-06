@@ -7,6 +7,7 @@ using Faculty.EFCore.Data;
 using Faculty.EFCore.Infrastucture;
 using Faculty.Web.ApiResults;
 using Faculty.Web.Infrastructure;
+using Faculty.Web.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -28,9 +29,14 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpGet("{id?}")]
-        public virtual async Task<IActionResult> GetItems(TId id)
+        public virtual async Task<IActionResult> GetItems(TId id, GetItemsOptions options)
         {
-            return Json(await GetItemsFromRepository(id));
+            if (ModelState.IsValid)
+            {
+                return Json(await GetItemsFromRepository(id, options));
+            }
+
+            return Json(GetErrorResultFromModelState(ModelState));
         }
 
         [HttpPost]
@@ -76,9 +82,23 @@ namespace Faculty.Web.Controllers.Api
             _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
-        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id)
+        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id, GetItemsOptions options)
         {
-            TEntity[] entities = !id.Equals(default(TId)) ? new[] { await EntityRepository.GetByIdAsync(id) } : EntityRepository.Entities.ToArray();
+            TEntity[] entities;
+            if (!Equals(id, default(TId)))
+            {
+                entities = new[] {await EntityRepository.GetByIdAsync(id)};
+            }
+            else
+            {
+                IQueryable<TEntity> query = EntityRepository.Entities;
+                if (options != null && options.RowsCount > 0)
+                {
+                    query = query.Skip((options.Page - 1) * options.RowsCount).Take(options.RowsCount);
+                }
+
+                entities = query.ToArray();
+            }
 
             return ApiResult.SuccessResult(entities);
         }

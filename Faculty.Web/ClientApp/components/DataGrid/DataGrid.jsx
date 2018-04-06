@@ -17,25 +17,29 @@ class DataGrid extends React.Component {
 
     render() {
         let schema = modelSchemaProvider.getSchemaByName(this.props.modelName);
+        
         return (
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        {schema.columns.map(column => (
-                            <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {this.props.data.map(row => (
-                        <TableRow key={row[schema.primaryColumnName]}>
+            <div>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
                             {schema.columns.map(column => (
-                                <TableRowColumn key={column.name}>{row[column.name]}</TableRowColumn>
+                                <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
                             ))}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody>
+                        {this.props.data.map(row => (
+                            <TableRow key={row[schema.primaryColumnName]}>
+                                {schema.columns.map(column => (
+                                    <TableRowColumn key={column.name}>{row[column.name]}</TableRowColumn>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                
+            </div>
         );
     }
 }
