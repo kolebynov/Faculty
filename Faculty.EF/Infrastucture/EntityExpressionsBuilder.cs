@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using Faculty.EFCore.Domain;
 using Faculty.EFCore.Resources;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -36,6 +38,21 @@ namespace Faculty.EFCore.Infrastucture
             }
 
             return (Expression<Func<TEntity, TId>>)resultExpression;
+        }
+
+        public Expression<Func<TEntity, TEntity>> GetDefaultEntitySelectorExpression<TEntity>()
+        {
+            Type entityType = typeof(TEntity);
+            ParameterExpression inputEntityExpression = Expression.Parameter(entityType);
+
+            return Expression.Lambda<Func<TEntity, TEntity>>(
+                Expression.MemberInit(
+                    Expression.New(entityType.GetConstructor(Type.EmptyTypes)),
+                    entityType.GetProperties().Select<PropertyInfo, MemberBinding>(property => 
+                        Expression.Bind(property, Expression.Property(inputEntityExpression, property)))
+                ), 
+                inputEntityExpression
+            );
         }
     }
 }

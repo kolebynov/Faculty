@@ -2,6 +2,7 @@
 
 namespace Faculty.EFCore.Domain
 {
+    [DisplayColumn(nameof(Name))]
     public abstract class BaseLookup : BaseEntity
     {
         [MaxLength(250)]

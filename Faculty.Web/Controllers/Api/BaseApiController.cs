@@ -93,7 +93,7 @@ namespace Faculty.Web.Controllers.Api
             }
             else
             {
-                IQueryable<TEntity> query = EntityRepository.Entities;
+                IQueryable<TEntity> query = EntityRepository.Entities.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<TEntity>());
                 if (options != null && options.RowsCount > 0)
                 {
                     query = query.Skip((options.Page - 1) * options.RowsCount).Take(options.RowsCount);

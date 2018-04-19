@@ -9,6 +9,7 @@ import {
     TableRow,
     TableRowColumn
 } from "material-ui/Table";
+import ViewCreator from "../../utils/ViewCreator";
 
 class DataGrid extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class DataGrid extends React.Component {
                     {this.props.data.map(row => (
                         <TableRow key={row[schema.primaryColumnName]}>
                             {schema.columns.map(column => (
-                                <TableRowColumn key={column.name}>{row[column.name]}</TableRowColumn>
+                                <TableRowColumn key={column.name}>{ViewCreator.createViewForModelValue(row[column.name], column.name, schema, row)}</TableRowColumn>
                             ))}
                         </TableRow>
                     ))}

@@ -4,7 +4,7 @@ class ModelSchema {
     }
 
     getColumnByName(name) {
-        let column = this.columns.find(column => column.columnName === name);
+        let column = this.columns.find(column => column.name === name);
         if (column) {
             return column;
         }
