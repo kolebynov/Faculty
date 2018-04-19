@@ -85,9 +85,11 @@ namespace Faculty.Web.Controllers.Api
         protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id, GetItemsOptions options)
         {
             TEntity[] entities;
+            int rowsTotal;
             if (!Equals(id, default(TId)))
             {
                 entities = new[] {await EntityRepository.GetByIdAsync(id)};
+                rowsTotal = 1;
             }
             else
             {
@@ -98,9 +100,14 @@ namespace Faculty.Web.Controllers.Api
                 }
 
                 entities = query.ToArray();
+                rowsTotal = EntityRepository.Entities.Count();
             }
-
-            return ApiResult.SuccessResult(entities);
+            return ApiResult.SuccesGetResult(entities, new PaginationData
+            {
+                CurrentPage = options?.Page ?? 1,
+                ItemsPerPage = options?.RowsCount ?? rowsTotal,
+                TotalItems = rowsTotal
+            });
         }
 
         protected virtual Func<TEntity, TId> CreateIdSelector() =>

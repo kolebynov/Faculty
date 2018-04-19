@@ -20,37 +20,38 @@ class DataGrid extends React.Component {
         
         return (
             <div>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
+                {this._renderTable(schema)}
+            </div>
+        );
+    }
+
+    _renderTable(schema) {
+        return (
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        {schema.columns.map(column => (
+                            <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
+                        ))}
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {this.props.data.map(row => (
+                        <TableRow key={row[schema.primaryColumnName]}>
                             {schema.columns.map(column => (
-                                <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
+                                <TableRowColumn key={column.name}>{row[column.name]}</TableRowColumn>
                             ))}
                         </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {this.props.data.map(row => (
-                            <TableRow key={row[schema.primaryColumnName]}>
-                                {schema.columns.map(column => (
-                                    <TableRowColumn key={column.name}>{row[column.name]}</TableRowColumn>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                
-            </div>
+                    ))}
+                </TableBody>
+            </Table>
         );
     }
 }
 
 DataGrid.propTypes = {
     modelName: PropTypes.string.isRequired,
-    data: PropTypes.array.isRequired,
-    pagesCount: PropTypes.number
-};
-DataGrid.defaultProps = {
-    pagesCount: 1
+    data: PropTypes.array.isRequired
 };
 
 export default DataGrid;

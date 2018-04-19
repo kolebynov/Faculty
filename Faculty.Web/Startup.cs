@@ -12,6 +12,7 @@ using Faculty.EFCore.Data;
 using Faculty.EFCore.Infrastucture;
 using Microsoft.EntityFrameworkCore;
 using Faculty.Web.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace Faculty.Web

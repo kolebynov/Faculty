@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Faculty.Web.Model;
 
 namespace Faculty.Web.ApiResults
 {
@@ -21,6 +22,16 @@ namespace Faculty.Web.ApiResults
             {
                 Success = true,
                 Data = data
+            };
+        }
+
+        public static GetApiResult<TData> SuccesGetResult<TData>(TData data, PaginationData paginationData)
+        {
+            return new GetApiResult<TData>
+            {
+                Success = true,
+                Data = data,
+                Pagination = paginationData
             };
         }
 
