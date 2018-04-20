@@ -29,14 +29,14 @@ class DataGrid extends React.Component {
     _renderTable(schema) {
         return (
             <Table>
-                <TableHeader>
+                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                     <TableRow>
                         {schema.columns.map(column => (
                             <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody displayRowCheckbox={false}>
                     {this.props.data.map(row => (
                         <TableRow key={row[schema.primaryColumnName]}>
                             {schema.columns.map(column => (

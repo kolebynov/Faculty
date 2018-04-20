@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Faculty.Web.Controllers.Api
 {
     [Route("api/students")]
-    public class StudentsController : BaseApiController<Student, Guid>
+    public class StudentsController : BaseApiController<Student>
     {
         public StudentsController(IRepository<Student> repository, IEntityExpressionsBuilder entityExpressionsBuilder) 
             : base(repository, entityExpressionsBuilder)

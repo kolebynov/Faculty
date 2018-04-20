@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Faculty.EFCore.Data;
+﻿using Faculty.EFCore.Data;
+using Faculty.EFCore.Domain;
 using Faculty.EFCore.Infrastucture;
 using Faculty.Web.ApiResults;
-using Faculty.Web.Infrastructure;
 using Faculty.Web.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Faculty.Web.Controllers.Api
 {
     [Produces("application/json")]
-    public abstract class BaseApiController<TEntity, TId> : Controller
+    public abstract class BaseApiController<TEntity> : Controller
+        where TEntity : BaseEntity
     {
         private readonly IEntityExpressionsBuilder _entityExpressionsBuilder;
-        private Func<TEntity, TId> _idSelector;
 
         public IRepository<TEntity> EntityRepository { get; }
 
-        protected virtual Func<TEntity, TId> IdSelector
-        {
-            get => _idSelector ?? (_idSelector = CreateIdSelector());
-            set => _idSelector = value;
-        }
-
         [HttpGet("{id?}")]
-        public virtual async Task<IActionResult> GetItems(TId id, GetItemsOptions options)
+        public virtual async Task<IActionResult> GetItems(Guid id, GetItemsOptions options)
         {
             if (ModelState.IsValid)
             {
@@ -45,7 +37,7 @@ namespace Faculty.Web.Controllers.Api
             if (ModelState.IsValid)
             {
                 TEntity newItem = await EntityRepository.AddAsync(item);
-                return CreatedAtAction("GetItems", new { id = IdSelector(newItem) },
+                return CreatedAtAction("GetItems", new { id = newItem.Id },
                     ApiResult.SuccessResult(new[] { newItem }));
             }
 
@@ -53,7 +45,7 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> UpdateItem(TId id, [FromBody] TEntity item)
+        public virtual async Task<IActionResult> UpdateItem(Guid id, [FromBody] TEntity item)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +57,7 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> RemoveItem(TId id)
+        public virtual async Task<IActionResult> RemoveItem(Guid id)
         {
             if (ModelState.IsValid)
             {
@@ -82,11 +74,11 @@ namespace Faculty.Web.Controllers.Api
             _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
-        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(TId id, GetItemsOptions options)
+        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(Guid id, GetItemsOptions options)
         {
             TEntity[] entities;
             int rowsTotal;
-            if (!Equals(id, default(TId)))
+            if (!Equals(id, Guid.Empty))
             {
                 entities = new[] {await EntityRepository.GetByIdAsync(id)};
                 rowsTotal = 1;
@@ -109,9 +101,6 @@ namespace Faculty.Web.Controllers.Api
                 TotalItems = rowsTotal
             });
         }
-
-        protected virtual Func<TEntity, TId> CreateIdSelector() =>
-            _entityExpressionsBuilder.GetIdSelectorExpression<TEntity, TId>().Compile();
 
         private ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
         {

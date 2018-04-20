@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Faculty.Web.Controllers.Api
 {
     [Route("api/groups")]
-    public class GroupsController : BaseApiController<Group, Guid>
+    public class GroupsController : BaseApiController<Group>
     {
         public GroupsController(IRepository<Group> repository, IEntityExpressionsBuilder entityExpressionsBuilder)
             : base(repository, entityExpressionsBuilder)

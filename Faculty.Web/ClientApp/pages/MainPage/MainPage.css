@@ -1,0 +1,9 @@
+#MainPage #LeftPanelWrapper {
+    float: left;
+    width: 256px;
+}
+
+#MainPage #BodyWrapper {
+    float: left;
+    margin-left: 256px;
+}
