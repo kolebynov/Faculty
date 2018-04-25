@@ -2,6 +2,7 @@ import Header from "../../components/Header/Header.jsx";
 import Body from "../../components/Body/Body.jsx";
 import React from "react";
 import LeftPanel from "../../components/LeftPanel/LeftPanel.jsx";
+import SectionSchemaProvider from "../../schemas/SectionSchemaProvider";
 import "./MainPage.css";
 
 const MainPage = () => (
@@ -10,7 +11,7 @@ const MainPage = () => (
             <Header />
         </div>
         <div id="LeftPanelWrapper">
-            <LeftPanel />
+            <LeftPanel sections={SectionSchemaProvider.getSchemas()} initialSelectedSection="Student" />
         </div>
         <div id="BodyWrapper">
             <Body />

@@ -5,6 +5,10 @@ import DataTypes from "../common/DataTypes";
 import modelSchemaProvider from "../schemas/ModelSchemaProvider";
 
 class ViewCreator {
+    createLinkForModelSection(modelName, caption) {
+        return (<Link to={UrlHelper.getUrlForModelSection(modelName)}>{caption}</Link>);
+    }
+
     createLinkForModelPage(modelName, primaryColumnValue, caption) {
         return (<Link to={UrlHelper.getUrlForModelPage(modelName, primaryColumnValue)}>{caption}</Link>);
     }

@@ -7,7 +7,7 @@ class ModelSchemaProvider {
             return schema;
         }
         else {
-            throw new Error(`ModelSchema "${name}" not found.`);
+            throw new Error(`Model schema "${name}" not found.`);
         }
     }
 
