@@ -5,19 +5,13 @@ import PropTypes from "prop-types";
 
 const SelectableList = makeSelectable(List);
 
-class LeftPanel extends React.Component {
-    constructor(props, a, b) {
+class LeftPanel extends React.PureComponent {
+    constructor(props, context) {
         debugger;
         super(props);
         this.state = {
-            selectedSection: props.initialSelectedSection
+            selectedSection: props.initialSelectedSection || context.router.match.params
         };
-    }
-
-    componentDidMount() {
-        if (this.state.selectedSection) {
-            this._goToSection(this.state.selectedSection);
-        }
     }
 
     render() {

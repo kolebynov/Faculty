@@ -52,6 +52,29 @@ const schemas = [
                 caption: "Специальность"
             }
         ]
+    }),
+    new ModelSchema({
+        name: "Specialty",
+        primaryColumnName: "id",
+        displayColumnName: "name",
+        resourceName: "specialties",
+        columns: [
+            {
+                name: "id",
+                type: DataTypes.TEXT
+            },
+            {
+                name: "name",
+                type: DataTypes.TEXT,
+                caption: "Имя"
+            },
+            {
+                name: "faculty",
+                type: DataTypes.LOOKUP,
+                referenceSchemaName: "Faculty",
+                caption: "Факультет"
+            }
+        ]
     })
 ];
 

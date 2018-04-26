@@ -1,23 +1,25 @@
 import modelSchemaProvider from "../schemas/ModelSchemaProvider";
 
 class UrlHelper {
-    getPathForModelSection(modelName) {
-        return this.getUrlForModelSection(modelName);
+    primaryColumnName = "primaryColumnValue";
+    resourceName = "resourceName";
+
+    getPathForModelSection() {
+        return `/section/:${this.resourceName}`;
     }
 
     getPathForModelPage(modelName) {
-        return `/page/${modelSchemaProvider.getSchemaByName(modelName).resourceName}/${UrlHelper.primaryColumnName}`;
+        return `/page/${modelSchemaProvider.getSchemaByName(modelName).resourceName}/:${this.primaryColumnName}`;
     }
 
     getUrlForModelSection(modelName) {
-        return `/section/${modelSchemaProvider.getSchemaByName(modelName).resourceName}`;
+        const resourceName = modelSchemaProvider.getSchemaByName(modelName).resourceName;
+        return this.getPathForModelSection().replace(new RegExp(`:${this.resourceName}`), resourceName);
     }
 
     getUrlForModelPage(modelName, primaryColumnValue) {
-        return this.getPathForModelPage(modelName).replace(new RegExp(UrlHelper.primaryColumnName), primaryColumnValue);
+        return this.getPathForModelPage(modelName).replace(new RegExp(`:${this.primaryColumnName}`), primaryColumnValue);
     }
 }
-
-UrlHelper.primaryColumnName = ":primaryColumnValue";
 
 export default new UrlHelper();

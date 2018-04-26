@@ -1,19 +1,10 @@
 import schemas from "./SectionSchemas";
+import BaseSchemaProvider from "./BaseSchemaProvider";
 
-class SectionSchemaProvider {
+class SectionSchemaProvider extends BaseSchemaProvider {
     getSchemaByModelName(modelName) {
-        let schema = schemas.find(s => s.modelName === modelName);
-        if (schema) {
-            return schema;
-        }
-        else {
-            throw new Error(`Section schema by model name "${modelName}" not found.`);
-        }
-    }
-
-    getSchemas() {
-        return schemas;
+        return this.getSchemaByFilter(s => s.modelName === modelName, `Section schema by model name "${modelName}" not found.`);
     }
 }
 
-export default new SectionSchemaProvider();
+export default new SectionSchemaProvider(schemas);

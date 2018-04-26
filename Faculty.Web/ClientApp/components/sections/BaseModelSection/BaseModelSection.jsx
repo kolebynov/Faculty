@@ -5,20 +5,22 @@ import DataGrid from "../../DataGrid/DataGrid.jsx";
 import ApiService from "../../../services/ApiService";
 import Pagination from "../../Pagination/Pagination.jsx";
 
-class BaseModelSection extends React.Component {
+class BaseModelSection extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = {
-            data: [],
-            pagesCount: 1,
-            currentPage: 1
-        };
+        this.state = this._getDefaultState();
 
         this._onPageChanged = this._onPageChanged.bind(this);
     }
 
     componentDidMount() {
-        this._loadData(this.state.currentPage);
+        this._loadCurrentPage();
+    }
+
+    componentWillReceiveProps(newProps) {
+        if (this.props.modelName !== newProps.modelName) {
+            this.setState(this._getDefaultState(), this._loadCurrentPage);
+        }
     }
 
     render() {
@@ -29,6 +31,8 @@ class BaseModelSection extends React.Component {
             </div>
         );
     }
+
+    _loadCurrentPage = () => this._loadData(this.state.currentPage)
 
     _loadData(page) {
         let apiService = new ApiService(modelSchemaProvider.getSchemaByName(this.props.modelName).resourceName);
@@ -43,10 +47,18 @@ class BaseModelSection extends React.Component {
     _onPageChanged(newPage) {
         this._loadData(newPage);
     }
+
+    _getDefaultState() {
+        return {
+            data: [],
+            pagesCount: 1,
+            currentPage: 1
+        };
+    }
 }
 
 BaseModelSection.propTypes = {
-    modelName: PropTypes.string
+    modelName: PropTypes.string.isRequired
 };
 BaseModelSection.defaultItemsPerPage = 30;
 
