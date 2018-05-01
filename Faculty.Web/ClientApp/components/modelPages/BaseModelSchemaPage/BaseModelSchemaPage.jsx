@@ -21,7 +21,6 @@ class BaseModelSchemaPage extends BaseModelPage {
 }
 
 BaseModelSchemaPage.propTypes = {
-    modelName: PropTypes.string.isRequired,
     primaryColumnValue: PropTypes.string
 }
 

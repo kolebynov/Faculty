@@ -5,7 +5,7 @@ class StudentPage extends BaseModelSchemaPage {
     renderBody() {
         return (
             <div>
-                {this.state.model.name}
+                {this.renderEditComponent("name")}
             </div>
         );
     }

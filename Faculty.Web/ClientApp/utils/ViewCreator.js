@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import DataTypes from "../common/DataTypes";
 import modelSchemaProvider from "../schemas/ModelSchemaProvider";
 import modelPageSchemaProvider from "../schemas/ModelPageSchemaProvider";
+import TextField from 'material-ui/TextField';
 
 class ViewCreator {
     createLinkForModelSection(modelName, caption) {
@@ -19,7 +20,7 @@ class ViewCreator {
         if (column.name === schema.displayColumnName && modelPageSchemaProvider.findSchemaByModelName(schema.name)) {
             return this.createLinkForModelPage(schema.name, model[schema.primaryColumnName], value);
         }
-        if (column.type === DataTypes.LOOKUP ) {
+        if (column.type === DataTypes.LOOKUP) {
             let referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
             if (modelPageSchemaProvider.findSchemaByModelName(column.referenceSchemaName)) {
                 return this.createLinkForModelPage(column.referenceSchemaName, 
@@ -31,8 +32,13 @@ class ViewCreator {
         return value;
     }
 
-    createEditViewForModelValue() {
-        throw new Error();
+    createEditViewForModelValue(value, columnName, schema, model, onChangeHandler, otherProps) {
+        const column = schema.getColumnByName(columnName);
+        debugger;
+        switch (column.type) {
+            default:
+                return <TextField id={columnName} defaultValue={value} onChange={onChangeHandler} {...otherProps} />;
+        }
     }
 }
 
