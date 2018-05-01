@@ -16,7 +16,8 @@ class BaseModelPage extends React.Component {
 }
 
 BaseModelPage.propTypes = {
-    modelName: PropTypes.string
+    modelName: PropTypes.string.isRequired,
+    primaryColumnValue: PropTypes.string
 };
 
 export default BaseModelPage;

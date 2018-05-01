@@ -3,7 +3,7 @@ import BaseModelPage from "../BaseModelPage/BaseModelPage.jsx";
 
 class StudentPage extends BaseModelPage {
     renderBody() {
-        return (<div></div>);
+        return (<div>123</div>);
     }
 }
 

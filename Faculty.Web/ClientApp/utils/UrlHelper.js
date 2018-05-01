@@ -8,8 +8,8 @@ class UrlHelper {
         return `/section/:${this.resourceName}`;
     }
 
-    getPathForModelPage(modelName) {
-        return `/page/${modelSchemaProvider.getSchemaByName(modelName).resourceName}/:${this.primaryColumnName}`;
+    getPathForModelPage() {
+        return `/page/:${this.resourceName}/:${this.primaryColumnName}`;
     }
 
     getUrlForModelSection(modelName) {
@@ -18,7 +18,9 @@ class UrlHelper {
     }
 
     getUrlForModelPage(modelName, primaryColumnValue) {
-        return this.getPathForModelPage(modelName).replace(new RegExp(`:${this.primaryColumnName}`), primaryColumnValue);
+        return this.getPathForModelPage(modelName)
+            .replace(new RegExp(`:${this.primaryColumnName}`), primaryColumnValue)
+            .replace(new RegExp(`:${this.resourceName}`), modelSchemaProvider.getSchemaByName(modelName).resourceName);
     }
 }
 
