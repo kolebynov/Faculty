@@ -1,9 +1,13 @@
 import React from "react";
-import BaseModelPage from "../BaseModelPage/BaseModelPage.jsx";
+import BaseModelSchemaPage from "../BaseModelSchemaPage/BaseModelSchemaPage.jsx";
 
-class StudentPage extends BaseModelPage {
+class StudentPage extends BaseModelSchemaPage {
     renderBody() {
-        return (<div>123</div>);
+        return (
+            <div>
+                {this.state.model.name}
+            </div>
+        );
     }
 }
 

@@ -8,7 +8,7 @@ class BaseSchemaProvider {
     }
 
     getSchemaByFilter(filter, notFoundMessage) {
-        let schema = this._schemas.find(filter);
+        let schema = this.getSchemas().find(filter);
         if (schema) {
             return schema;
         }

@@ -2,6 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 
 class BaseModelPage extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            model: { ...this.props.initialModel }
+        };
+    }
+
     render() {
         return (
             <div>
@@ -13,11 +21,12 @@ class BaseModelPage extends React.Component {
     renderBody() {
         return null;
     }
+
+    
 }
 
 BaseModelPage.propTypes = {
-    modelName: PropTypes.string.isRequired,
-    primaryColumnValue: PropTypes.string
+    initialModel: PropTypes.object
 };
 
 export default BaseModelPage;

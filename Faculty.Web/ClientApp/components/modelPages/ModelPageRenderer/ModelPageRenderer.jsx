@@ -7,7 +7,7 @@ import urlHelper from "../../../utils/UrlHelper";
 class ModelPageRenderer extends React.PureComponent {
     render() {
         const resourceName = this.props.match.params[urlHelper.resourceName];
-        const primaryColumnValue = this.props.match.params[urlHelper.primaryColumnValue];
+        const primaryColumnValue = this.props.match.params[urlHelper.primaryColumnName];
         const modelName = modelSchemaProvider.getSchemaByResourceName(resourceName).name;
         const ModelPageComponent = modelPageSchemaProvider.getSchemaByModelName(modelName).component
             || BaseModelPage;

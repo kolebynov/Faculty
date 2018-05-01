@@ -7,7 +7,6 @@ const SelectableList = makeSelectable(List);
 
 class LeftPanel extends React.PureComponent {
     constructor(props, context) {
-        debugger;
         super(props);
         this.state = {
             selectedSection: props.initialSelectedSection || context.router.match.params
