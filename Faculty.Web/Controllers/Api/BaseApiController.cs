@@ -74,32 +74,30 @@ namespace Faculty.Web.Controllers.Api
             _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
-        protected virtual async Task<ApiResult<TEntity[]>> GetItemsFromRepository(Guid id, GetItemsOptions options)
+        protected virtual Task<ApiResult<TEntity[]>> GetItemsFromRepository(Guid id, GetItemsOptions options)
         {
-            TEntity[] entities;
             int rowsTotal;
+            IQueryable<TEntity> query = EntityRepository.Entities.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<TEntity>());
             if (!Equals(id, Guid.Empty))
             {
-                entities = new[] {await EntityRepository.GetByIdAsync(id)};
+                query = query.Where(entity => entity.Id == id);
                 rowsTotal = 1;
             }
             else
             {
-                IQueryable<TEntity> query = EntityRepository.Entities.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<TEntity>());
                 if (options != null && options.RowsCount > 0)
                 {
                     query = query.Skip((options.Page - 1) * options.RowsCount).Take(options.RowsCount);
                 }
 
-                entities = query.ToArray();
                 rowsTotal = EntityRepository.Entities.Count();
             }
-            return ApiResult.SuccesGetResult(entities, new PaginationData
+            return Task.FromResult((ApiResult<TEntity[]>)ApiResult.SuccesGetResult(query.ToArray(), new PaginationData
             {
                 CurrentPage = options?.Page ?? 1,
                 ItemsPerPage = options?.RowsCount ?? rowsTotal,
                 TotalItems = rowsTotal
-            });
+            }));
         }
 
         private ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
