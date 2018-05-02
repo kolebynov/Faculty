@@ -37,7 +37,7 @@ class ViewCreator {
         debugger;
         switch (column.type) {
             default:
-                return <TextField id={columnName} defaultValue={value} onChange={onChangeHandler} {...otherProps} />;
+                return <TextField id={columnName} defaultValue={value} value={value} onChange={onChangeHandler} {...otherProps} floatingLabelText={column.caption || column.name} />;
         }
     }
 }

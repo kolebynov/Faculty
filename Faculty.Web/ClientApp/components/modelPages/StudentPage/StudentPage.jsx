@@ -6,6 +6,7 @@ class StudentPage extends BaseModelSchemaPage {
         return (
             <div>
                 {this.renderEditComponent("name")}
+                {this.renderEditComponent("group")}
             </div>
         );
     }
