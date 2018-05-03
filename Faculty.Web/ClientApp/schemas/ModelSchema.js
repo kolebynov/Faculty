@@ -12,6 +12,10 @@ class ModelSchema {
             throw new Error(`Column ${name} not found`);
         }
     }
+
+    getColumns() {
+        return this.columns || [];
+    }
 }
 
 export default ModelSchema;

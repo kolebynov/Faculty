@@ -1,5 +1,6 @@
 import ModelSchema from "./ModelSchema";
 import DataTypes from "../common/DataTypes";
+import ModelColumnSchema from "./ModelColumnSchema";
 
 const schemas = [
     new ModelSchema({
@@ -8,26 +9,27 @@ const schemas = [
         displayColumnName: "name",
         resourceName: "students",
         columns: [
-            {
+            new ModelColumnSchema({
                 name: "id",
                 type: DataTypes.TEXT,
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "name",
                 type: DataTypes.TEXT,
                 caption: "Имя"
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "firstName",
                 type: DataTypes.TEXT,
                 caption: "Фамилия"
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "group",
                 type: DataTypes.LOOKUP,
                 referenceSchemaName: "Group",
-                caption: "Группа"
-            }
+                caption: "Группа",
+                keyColumnName: "groupId"
+            })
         ]
     }),
     new ModelSchema({
@@ -36,21 +38,22 @@ const schemas = [
         displayColumnName: "name",
         resourceName: "groups",
         columns: [
-            {
+            new ModelColumnSchema({
                 name: "id",
                 type: DataTypes.TEXT
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "name",
                 type: DataTypes.TEXT,
                 caption: "Имя"
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "specialty",
                 type: DataTypes.LOOKUP,
                 referenceSchemaName: "Specialty",
-                caption: "Специальность"
-            }
+                caption: "Специальность",
+                keyColumnName: "specialtyId"
+            })
         ]
     }),
     new ModelSchema({
@@ -59,21 +62,22 @@ const schemas = [
         displayColumnName: "name",
         resourceName: "specialties",
         columns: [
-            {
+            new ModelColumnSchema({
                 name: "id",
                 type: DataTypes.TEXT
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "name",
                 type: DataTypes.TEXT,
                 caption: "Имя"
-            },
-            {
+            }),
+            new ModelColumnSchema({
                 name: "faculty",
                 type: DataTypes.LOOKUP,
                 referenceSchemaName: "Faculty",
-                caption: "Факультет"
-            }
+                caption: "Факультет",
+                keyColumnName: "facultyId"
+            })
         ]
     })
 ];

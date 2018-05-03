@@ -8,10 +8,10 @@ class ModelPageRenderer extends React.PureComponent {
     render() {
         const resourceName = this.props.match.params[urlHelper.resourceName];
         const primaryColumnValue = this.props.match.params[urlHelper.primaryColumnName];
-        const modelName = modelSchemaProvider.getSchemaByResourceName(resourceName).name;
-        const ModelPageComponent = modelPageSchemaProvider.getSchemaByModelName(modelName).component
+        const modelSchema = modelSchemaProvider.getSchemaByResourceName(resourceName);
+        const ModelPageComponent = modelPageSchemaProvider.getSchemaByModelName(modelSchema.name).component
             || BaseModelPage;
-        return (<ModelPageComponent modelName={modelName} primaryColumnValue={primaryColumnValue}>{this.props.children}</ModelPageComponent>);
+        return (<ModelPageComponent modelSchema={modelSchema} primaryColumnValue={primaryColumnValue}>{this.props.children}</ModelPageComponent>);
     }
 }
 

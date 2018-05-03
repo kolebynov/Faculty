@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom'
 import DataTypes from "../common/DataTypes";
 import modelSchemaProvider from "../schemas/ModelSchemaProvider";
 import modelPageSchemaProvider from "../schemas/ModelPageSchemaProvider";
-import TextField from 'material-ui/TextField';
+import TextField from "material-ui/TextField";
+import SelectField from "material-ui/SelectField";
+import MenuItem from "material-ui/MenuItem";
+import modelUtils from "../utils/ModelUtils";
 
 class ViewCreator {
     createLinkForModelSection(modelName, caption) {
@@ -18,15 +21,15 @@ class ViewCreator {
     createViewForModelValue(value, columnName, schema, model) {
         const column = schema.getColumnByName(columnName);
         if (column.name === schema.displayColumnName && modelPageSchemaProvider.findSchemaByModelName(schema.name)) {
-            return this.createLinkForModelPage(schema.name, model[schema.primaryColumnName], value);
+            return this.createLinkForModelPage(schema.name, modelUtils.getPrimaryValue(model, schema), value);
         }
         if (column.type === DataTypes.LOOKUP) {
             let referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
             if (modelPageSchemaProvider.findSchemaByModelName(column.referenceSchemaName)) {
                 return this.createLinkForModelPage(column.referenceSchemaName, 
-                    value[referenceSchema.primaryColumnName], value[referenceSchema.displayColumnName]);
+                    modelUtils.getPrimaryValue(value, referenceSchema), modelUtils.getDisplayValue(value, referenceSchema));
             }
-            return (value || {})[referenceSchema.displayColumnName];
+            return modelUtils.getDisplayValue(model, schema);
         }
 
         return value;
@@ -34,11 +37,23 @@ class ViewCreator {
 
     createEditViewForModelValue(value, columnName, schema, model, onChangeHandler, otherProps) {
         const column = schema.getColumnByName(columnName);
-        debugger;
         switch (column.type) {
+            case DataTypes.LOOKUP:
+                return this.createSelectField(value, column, model);
             default:
-                return <TextField id={columnName} defaultValue={value} value={value} onChange={onChangeHandler} {...otherProps} floatingLabelText={column.caption || column.name} />;
+                return <TextField id={columnName} defaultValue={value} onChange={onChangeHandler} {...otherProps} floatingLabelText={column.getCaption()} />;
         }
+    }
+
+    createSelectField(value, column, model, onChangeHandler) {
+        const referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
+        return (
+            <SelectField floatingLabelText={column.getCaption()} value={modelUtils.getPrimaryValue(value, referenceSchema)} onChange={onChangeHandler}>
+                {modelUtils.getLookupCollection(model, column.name).map(lookupValue => (
+                    <MenuItem value={modelUtils.getPrimaryValue(lookupValue, referenceSchema)} primaryText={modelUtils.getDisplayValue(lookupValue, referenceSchema)} />
+                ))}
+            </SelectField>
+        );
     }
 }
 
