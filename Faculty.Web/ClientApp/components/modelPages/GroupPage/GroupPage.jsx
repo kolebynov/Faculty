@@ -1,16 +1,15 @@
 import React from "react";
 import BaseModelSchemaPage from "../BaseModelSchemaPage/BaseModelSchemaPage.jsx";
 
-class StudentPage extends BaseModelSchemaPage {
+class GroupPage extends BaseModelSchemaPage {
     renderBody() {
         return (
             <div>
                 {this.renderEditComponent("name")}
-                {this.renderEditComponent("firstName")}
-                {this.renderEditComponent("group")}
+                {this.renderEditComponent("specialty")}
             </div>
         );
     }
 }
 
-export default StudentPage;
+export default GroupPage;

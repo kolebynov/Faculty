@@ -36,18 +36,40 @@ namespace Faculty.Web
 
         private static void SeedTestData(FacultyContext context)
         {
-            SeedGroups(context);
+            SeedFaculty(context);
             context.SaveChanges();
         }
 
-        private static void SeedGroups(FacultyContext context)
+        private static void SeedFaculty(FacultyContext context)
+        {
+            EFCore.Domain.Faculty faculty = new EFCore.Domain.Faculty
+            {
+                Name = "Факультет 1"
+            };
+            context.Faculties.Add(faculty);
+            SeedSpecialities(context, faculty);
+        }
+
+        private static void SeedSpecialities(FacultyContext context, EFCore.Domain.Faculty faculty)
+        {
+            Specialty specialty = new Specialty
+            {
+                FacultyId = faculty.Id,
+                Name = "Специальность 1"
+            };
+            context.Specialties.Add(specialty);
+            SeedGroups(context, specialty);
+        }
+
+        private static void SeedGroups(FacultyContext context, Specialty specialty)
         {
             foreach (int i in Enumerable.Range(1, 10))
             {
                 Group group = new Group
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Group " + i
+                    Name = "Группа " + i,
+                    SpecialtyId = specialty.Id
                 };
                 context.Groups.Add(group);
                 SeedStudentsForGroup(context, group);
@@ -61,8 +83,8 @@ namespace Faculty.Web
                 context.Students.Add(new Student
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Student " + i + " " + group.Name,
-                    FirstName = "Student " + i,
+                    Name = "Студент " + i + " " + group.Name,
+                    FirstName = "Студент " + i,
                     GroupId = group.Id
                 });
             }

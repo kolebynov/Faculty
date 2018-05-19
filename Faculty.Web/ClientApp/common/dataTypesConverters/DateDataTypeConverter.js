@@ -6,7 +6,7 @@ class DateDataTypeConverter extends BaseDataTypeConverter {
     }
 
     fromString(str) {
-        return Date.parse(str);
+        return new Date(Date.parse(str));
     }
 }
 

@@ -8,6 +8,7 @@ import TextField from "material-ui/TextField";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import modelUtils from "../utils/ModelUtils";
+import dataTypeConverterProvider from "../common/DataTypeConverterProvider";
 
 class ViewCreator {
     createLinkForModelSection(modelName, caption) {
@@ -29,31 +30,47 @@ class ViewCreator {
                 return this.createLinkForModelPage(column.referenceSchemaName, 
                     modelUtils.getPrimaryValue(value, referenceSchema), modelUtils.getDisplayValue(value, referenceSchema));
             }
-            return modelUtils.getDisplayValue(model, schema);
+            return modelUtils.getDisplayValue(value, referenceSchema);
         }
 
         return value;
     }
 
-    createEditViewForModelValue(value, columnName, schema, model, onChangeHandler, otherProps) {
+    createEditViewForModelValue(value, columnName, schema, model, onChangeHandler) {
         const column = schema.getColumnByName(columnName);
+        let editComponent = null;
         switch (column.type) {
             case DataTypes.LOOKUP:
-                return this.createSelectField(value, column, model);
+                editComponent = this.createSelectField(value, column, model, onChangeHandler);
+                break;
             default:
-                return <TextField id={columnName} defaultValue={value} onChange={onChangeHandler} {...otherProps} floatingLabelText={column.getCaption()} />;
+                editComponent = <TextField id={columnName} value={value} onChange={(e, newValue) => 
+                    this._onEditComponentChange(newValue, column, model, onChangeHandler)} 
+                    floatingLabelText={column.getCaption()} />;
         }
+
+        return <div>{editComponent}</div>
     }
 
     createSelectField(value, column, model, onChangeHandler) {
         const referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
         return (
-            <SelectField floatingLabelText={column.getCaption()} value={modelUtils.getPrimaryValue(value, referenceSchema)} onChange={onChangeHandler}>
-                {modelUtils.getLookupCollection(model, column.name).map(lookupValue => (
-                    <MenuItem value={modelUtils.getPrimaryValue(lookupValue, referenceSchema)} primaryText={modelUtils.getDisplayValue(lookupValue, referenceSchema)} />
-                ))}
+            <SelectField floatingLabelText={column.getCaption()} value={modelUtils.getPrimaryValue(value, referenceSchema)} 
+                onChange={(e, index, newValue) => this._onEditComponentChange(newValue, column, model, onChangeHandler)}>
+                {modelUtils.getLookupCollection(model, column.name).map(lookupValue => {
+                    const primaryValue = modelUtils.getPrimaryValue(lookupValue, referenceSchema);
+                    return (
+                        <MenuItem key={primaryValue} value={primaryValue} primaryText={modelUtils.getDisplayValue(lookupValue, referenceSchema)} />
+                    );
+                })}
             </SelectField>
         );
+    }
+
+    _onEditComponentChange(rawValue, column, model, onChangeHandler) {
+        const newValue = dataTypeConverterProvider.getConverter(column.type)
+            .fromString(rawValue, column, model);
+        onChangeHandler(newValue, column);
     }
 }
 

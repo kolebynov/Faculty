@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import modelUtils from "../../../utils/ModelUtils";
 import dataTypeConverterProvider from "../../../common/DataTypeConverterProvider";
 import DataTypes from "../../../common/DataTypes";
+import FlatButton from 'material-ui/FlatButton';
 
 class BaseModelSchemaPage extends BaseModelPage {
     componentWillMount() {
@@ -14,7 +15,12 @@ class BaseModelSchemaPage extends BaseModelPage {
     }
 
     renderFooter() {
-        return (<input type="button" onClick={this._save}></input>);
+        return (
+            <div>
+                <FlatButton label="Сохранить" onClick={this._save}></FlatButton>
+                <FlatButton label="Назад" onClick={this._back}></FlatButton>
+            </div>
+        );
     }
 
     _loadModel() {
@@ -28,15 +34,29 @@ class BaseModelSchemaPage extends BaseModelPage {
     }
 
     _save = () => {
-        const model = this.state.model;
-        const modelSchema = this.props.modelSchema;
-        new ApiService(modelSchema.resourceName)
-            .updateItem(modelUtils.getPrimaryValue(model, modelSchema), modelUtils.getModelForUpdate(model, modelSchema));
+        if (this.state.hasChanges) {
+            const model = this.state.model;
+            const modelSchema = this.props.modelSchema;
+            new ApiService(modelSchema.resourceName)
+                .updateItem(modelUtils.getPrimaryValue(model, modelSchema), modelUtils.getModelForUpdate(model, modelSchema))
+                .then(response => this._back());
+        }
+        else {
+            this._back();
+        }
+    }
+
+    _back = () => {
+        this.context.router.history.goBack();
     }
 }
 
 BaseModelSchemaPage.propTypes = {
     primaryColumnValue: PropTypes.string
 }
+
+BaseModelSchemaPage.contextTypes = {
+    router: PropTypes.object.isRequired
+};
 
 export default BaseModelSchemaPage;

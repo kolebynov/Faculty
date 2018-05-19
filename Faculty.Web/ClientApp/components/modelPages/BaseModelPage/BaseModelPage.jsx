@@ -5,14 +5,14 @@ import modelSchemaProvider from "../../../schemas/ModelSchemaProvider";
 import modelUtils from "../../../utils/ModelUtils";
 import DataTypes from "../../../common/DataTypes";
 import ApiService from "../../../services/ApiService";
-import dataTypeConverterProvider from "../../../common/DataTypeConverterProvider";
 
 class BaseModelPage extends React.PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            model: { ...this.props.initialModel }
+            model: { ...this.props.initialModel },
+            hasChanges: false
         };
     }
 
@@ -44,17 +44,19 @@ class BaseModelPage extends React.PureComponent {
 
     renderEditComponent(columnName) {
         return viewCreator.createEditViewForModelValue(this.state.model[columnName], columnName, 
-            this.props.modelSchema, this.state.model, this._onEditComponentChange, { "data-column": columnName })
+            this.props.modelSchema, this.state.model, this._onEditComponentChange)
     }
 
-    _onEditComponentChange = (e) => {
+    _onEditComponentChange = (newValue, column) => {
         const newModel = { ...this.state.model };
-        const column = this.props.modelSchema.getColumnByName(e.currentTarget.dataset.column);
-        const value = e.currentTarget.value;
-        newModel[column.name] = dataTypeConverterProvider.getConverter(column.type)
-            .fromString(value, column, this.state.model);
+        newModel[column.name] = newValue;
+        if (column.type === DataTypes.LOOKUP) {
+            newModel[column.keyColumnName] = modelUtils.getPrimaryValue(newValue, 
+                modelSchemaProvider.getSchemaByName(column.referenceSchemaName));
+        }
         this.setState({
-            model: newModel
+            model: newModel,
+            hasChanges: true
         });
     }
 
