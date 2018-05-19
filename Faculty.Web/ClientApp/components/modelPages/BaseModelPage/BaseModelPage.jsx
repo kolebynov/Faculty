@@ -47,6 +47,19 @@ class BaseModelPage extends React.PureComponent {
             this.props.modelSchema, this.state.model, this._onEditComponentChange)
     }
 
+    renderDetail(detailModelName) {
+        debugger;
+        const rootModel = {
+            name: this.props.modelSchema.name,
+            primaryValue: modelUtils.getPrimaryValue(this.state.model, this.props.modelSchema)
+        };
+        if (!rootModel.name || !rootModel.primaryValue) {
+            return null;
+        }
+        const otherProps = {caption: modelSchemaProvider.getSchemaByName(detailModelName).getCaption()};
+        return viewCreator.createDetail(detailModelName, rootModel, otherProps);
+    }
+
     _onEditComponentChange = (newValue, column) => {
         const newModel = { ...this.state.model };
         newModel[column.name] = newValue;

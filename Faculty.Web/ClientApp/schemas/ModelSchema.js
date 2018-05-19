@@ -16,6 +16,10 @@ class ModelSchema {
     getColumns() {
         return this.columns || [];
     }
+
+    getCaption() {
+        return this.caption || this.name;
+    }
 }
 
 export default ModelSchema;

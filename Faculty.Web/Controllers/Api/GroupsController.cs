@@ -18,5 +18,17 @@ namespace Faculty.Web.Controllers.Api
             : base(repository, entityExpressionsBuilder)
         {
         }
+
+        [HttpGet("{id?}/students")]
+        public async Task<IActionResult> GetStudents([FromServices]IRepository<Student> studentRepository, Guid id, GetItemsOptions options)
+        {
+            if (ModelState.IsValid)
+            {
+                return Json(await GetItemsFromRepository(studentRepository.Entities.Where(student => student.GroupId == id), 
+                    Guid.Empty, options));
+            }
+
+            return Json(GetErrorResultFromModelState(ModelState));
+        }
     }
 }

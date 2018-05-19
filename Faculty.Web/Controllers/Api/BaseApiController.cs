@@ -25,7 +25,7 @@ namespace Faculty.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                return Json(await GetItemsFromRepository(id, options));
+                return Json(await GetItemsFromRepository(EntityRepository.Entities, id, options));
             }
 
             return Json(GetErrorResultFromModelState(ModelState));
@@ -74,10 +74,11 @@ namespace Faculty.Web.Controllers.Api
             _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
-        protected virtual Task<ApiResult<TEntity[]>> GetItemsFromRepository(Guid id, GetItemsOptions options)
+        protected virtual Task<ApiResult<T[]>> GetItemsFromRepository<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
+            where T : BaseEntity
         {
             int rowsTotal;
-            IQueryable<TEntity> query = EntityRepository.Entities.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<TEntity>());
+            query = query.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<T>());
             if (!Equals(id, Guid.Empty))
             {
                 query = query.Where(entity => entity.Id == id);
@@ -85,14 +86,14 @@ namespace Faculty.Web.Controllers.Api
             }
             else
             {
+                rowsTotal = query.Count();
+
                 if (options != null && options.RowsCount > 0)
                 {
                     query = query.Skip((options.Page - 1) * options.RowsCount).Take(options.RowsCount);
                 }
-
-                rowsTotal = EntityRepository.Entities.Count();
             }
-            return Task.FromResult((ApiResult<TEntity[]>)ApiResult.SuccesGetResult(query.ToArray(), new PaginationData
+            return Task.FromResult((ApiResult<T[]>)ApiResult.SuccesGetResult(query.ToArray(), new PaginationData
             {
                 CurrentPage = options?.Page ?? 1,
                 ItemsPerPage = options?.RowsCount ?? rowsTotal,
@@ -100,7 +101,7 @@ namespace Faculty.Web.Controllers.Api
             }));
         }
 
-        private ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
+        protected virtual ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
         {
             IEnumerable<ApiError> errors = modelState.Values
                 .SelectMany(s => s.Errors)

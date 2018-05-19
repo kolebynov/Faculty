@@ -5,6 +5,7 @@ import ModelColumnSchema from "./ModelColumnSchema";
 const schemas = [
     new ModelSchema({
         name: "Student",
+        caption: "Студенты",
         primaryColumnName: "id",
         displayColumnName: "name",
         resourceName: "students",
@@ -34,6 +35,7 @@ const schemas = [
     }),
     new ModelSchema({
         name: "Group",
+        caption: "Группы",
         primaryColumnName: "id",
         displayColumnName: "name",
         resourceName: "groups",
@@ -58,6 +60,7 @@ const schemas = [
     }),
     new ModelSchema({
         name: "Specialty",
+        caption: "Специальности",
         primaryColumnName: "id",
         displayColumnName: "name",
         resourceName: "specialties",

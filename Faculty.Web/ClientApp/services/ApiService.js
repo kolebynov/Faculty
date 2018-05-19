@@ -11,9 +11,9 @@ class ApiService {
         };
     }
 
-    getItems(id, options) {
+    getItems(id, options, linkedResouceName) {
         id = id || "";
-        return this._request(`${this.apiRoute}/${id}${options ? "?" + queryString.stringify(options) : ""}`);
+        return this._request(`${this.apiRoute}/${id}${linkedResouceName ? `/${linkedResouceName}` : ""}${options ? "?" + queryString.stringify(options) : ""}`);
     }
 
     addItem(item) {

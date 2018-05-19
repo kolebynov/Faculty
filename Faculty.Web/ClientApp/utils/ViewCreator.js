@@ -9,6 +9,7 @@ import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import modelUtils from "../utils/ModelUtils";
 import dataTypeConverterProvider from "../common/DataTypeConverterProvider";
+import Detail from "../components/Detail/Detail.jsx";
 
 class ViewCreator {
     createLinkForModelSection(modelName, caption) {
@@ -65,6 +66,10 @@ class ViewCreator {
                 })}
             </SelectField>
         );
+    }
+
+    createDetail(detailModelName, rootModel, otherProps) {
+        return <Detail modelName={detailModelName} rootModel={rootModel} {...otherProps} />;
     }
 
     _onEditComponentChange(rawValue, column, model, onChangeHandler) {

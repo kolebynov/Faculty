@@ -7,6 +7,7 @@ class GroupPage extends BaseModelSchemaPage {
             <div>
                 {this.renderEditComponent("name")}
                 {this.renderEditComponent("specialty")}
+                {this.renderDetail("Student")}
             </div>
         );
     }
