@@ -29,8 +29,7 @@ class ModelUtils {
                 updateColumnName = column.keyColumnName;
             }
 
-            result[updateColumnName] = dataTypeConverterProvider.getConverter(column.type)
-                .toString(model[column.name], column, model);
+            result[updateColumnName] = model[updateColumnName];
             
             return result;
         }, {});

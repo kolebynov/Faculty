@@ -9,11 +9,11 @@ import {
     TableRow,
     TableRowColumn
 } from "material-ui/Table";
-import ViewCreator from "../../utils/ViewCreator";
 import Pagination from "../Pagination/Pagination.jsx";
 import ApiService from "../../services/ApiService";
+import ModelValueView from "../ModelValueView/ModelValueView.jsx";
 
-class DataGrid extends React.Component {
+class DataGrid extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -55,8 +55,9 @@ class DataGrid extends React.Component {
                     {this.state.data.map(row => (
                         <TableRow key={row[schema.primaryColumnName]}>
                             {schema.columns.map(column => (
-                                <TableRowColumn key={column.name}>{ViewCreator.createViewForModelValue(row[column.name], 
-                                    column.name, schema, row)}</TableRowColumn>
+                                <TableRowColumn key={column.name}>
+                                    <ModelValueView columnName={column.name} schema={schema} model={row}/>
+                                </TableRowColumn>
                             ))}
                         </TableRow>
                     ))}
@@ -73,7 +74,6 @@ class DataGrid extends React.Component {
     _loadCurrentPage = () => this._loadData(this.state.currentPage)
 
     _loadData(page) {
-        debugger;
         let modelName = this.props.modelName;
         let id = null;
         let linkedResouce = null;
@@ -83,7 +83,7 @@ class DataGrid extends React.Component {
             linkedResouce = modelSchemaProvider.getSchemaByName(this.props.modelName).resourceName;
         }
         let apiService = new ApiService(modelSchemaProvider.getSchemaByName(modelName).resourceName);
-        apiService.getItems(id, {page: page, rowsCount: DataGrid.defaultItemsPerPage}, linkedResouce)
+        apiService.getItems(id, {page: page, rowsCount: this._getItemsPerPage()}, linkedResouce)
             .then(response => this.setState({
                 data: response.data,
                 pagesCount: response.pagination.totalPages,
@@ -102,11 +102,16 @@ class DataGrid extends React.Component {
             currentPage: 1
         };
     }
+
+    _getItemsPerPage() {
+        return this.props.itemsPerPage || DataGrid.defaultItemsPerPage;
+    }
 }
 
 DataGrid.propTypes = {
     modelName: PropTypes.string.isRequired,
-    rootModel: PropTypes.object
+    rootModel: PropTypes.object,
+    itemsPerPage: PropTypes.number
 };
 DataGrid.defaultItemsPerPage = 30;
 

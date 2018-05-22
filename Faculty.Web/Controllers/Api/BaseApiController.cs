@@ -25,7 +25,7 @@ namespace Faculty.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                return Json(await GetItemsFromRepository(EntityRepository.Entities, id, options));
+                return Json(await CreateApiResultFromQueryAsync(EntityRepository.Entities, id, options));
             }
 
             return Json(GetErrorResultFromModelState(ModelState));
@@ -36,7 +36,8 @@ namespace Faculty.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                TEntity newItem = await EntityRepository.AddAsync(item);
+                await EntityRepository.AddAsync(item);
+                TEntity newItem = (await GetItemsFromQueryAsync(EntityRepository.Entities, item.Id, null)).First();
                 return CreatedAtAction("GetItems", new { id = newItem.Id },
                     ApiResult.SuccessResult(new[] { newItem }));
             }
@@ -49,7 +50,8 @@ namespace Faculty.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                TEntity updatedEntity = await EntityRepository.UpdateAsync(item);
+                await EntityRepository.UpdateAsync(item);
+                TEntity updatedEntity = (await GetItemsFromQueryAsync(EntityRepository.Entities, id, null)).First();
                 return CreatedAtAction("GetItems", new { id }, ApiResult.SuccessResult(new[] { updatedEntity }));
             }
 
@@ -74,31 +76,40 @@ namespace Faculty.Web.Controllers.Api
             _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
         }
 
-        protected virtual Task<ApiResult<T[]>> GetItemsFromRepository<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
+        protected virtual async Task<ApiResult<IEnumerable<T>>> CreateApiResultFromQueryAsync<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
             where T : BaseEntity
         {
-            int rowsTotal;
+            int rowsTotal = 1;
+            if (Equals(id, Guid.Empty))
+            {
+                rowsTotal = query.Count();
+            }
+
+            return ApiResult.SuccesGetResult(await GetItemsFromQueryAsync(query, id, options), new PaginationData
+            {
+                CurrentPage = options?.Page ?? 1,
+                ItemsPerPage = options?.RowsCount ?? rowsTotal,
+                TotalItems = rowsTotal
+            });
+        }
+
+        protected virtual async Task<IEnumerable<T>> GetItemsFromQueryAsync<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
+            where T : BaseEntity
+        {
             query = query.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<T>());
             if (!Equals(id, Guid.Empty))
             {
                 query = query.Where(entity => entity.Id == id);
-                rowsTotal = 1;
             }
             else
             {
-                rowsTotal = query.Count();
-
                 if (options != null && options.RowsCount > 0)
                 {
                     query = query.Skip((options.Page - 1) * options.RowsCount).Take(options.RowsCount);
                 }
             }
-            return Task.FromResult((ApiResult<T[]>)ApiResult.SuccesGetResult(query.ToArray(), new PaginationData
-            {
-                CurrentPage = options?.Page ?? 1,
-                ItemsPerPage = options?.RowsCount ?? rowsTotal,
-                TotalItems = rowsTotal
-            }));
+
+            return await Task.FromResult((IEnumerable<T>)query.ToArray());
         }
 
         protected virtual ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)

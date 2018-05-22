@@ -9,7 +9,7 @@ import ApiService from "../../../services/ApiService";
 class BaseModelPage extends React.PureComponent {
     constructor(props) {
         super(props);
-
+        
         this.state = {
             model: { ...this.props.initialModel },
             hasChanges: false

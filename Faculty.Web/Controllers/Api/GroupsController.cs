@@ -24,7 +24,7 @@ namespace Faculty.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                return Json(await GetItemsFromRepository(studentRepository.Entities.Where(student => student.GroupId == id), 
+                return Json(await CreateApiResultFromQueryAsync(studentRepository.Entities.Where(student => student.GroupId == id), 
                     Guid.Empty, options));
             }
 
