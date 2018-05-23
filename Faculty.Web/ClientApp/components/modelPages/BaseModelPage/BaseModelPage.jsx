@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import viewCreator from "../../../utils/ViewCreator";
 import modelSchemaProvider from "../../../schemas/ModelSchemaProvider";
 import modelUtils from "../../../utils/ModelUtils";
 import DataTypes from "../../../common/DataTypes";
 import ApiService from "../../../services/ApiService";
+import ModelValueEdit from "../../ModelValueEdit/ModelValueEdit.jsx";
+import Detail from "../../Detail/Detail.jsx";
 
 class BaseModelPage extends React.PureComponent {
     constructor(props) {
@@ -43,12 +44,11 @@ class BaseModelPage extends React.PureComponent {
     }
 
     renderEditComponent(columnName) {
-        return viewCreator.createEditViewForModelValue(this.state.model[columnName], columnName, 
-            this.props.modelSchema, this.state.model, this._onEditComponentChange)
+        return <ModelValueEdit columnName={columnName} schema={this.props.modelSchema} model={this.state.model} 
+            onChange={this._onEditComponentChange}/>
     }
 
     renderDetail(detailModelName) {
-        debugger;
         const rootModel = {
             name: this.props.modelSchema.name,
             primaryValue: modelUtils.getPrimaryValue(this.state.model, this.props.modelSchema)
@@ -56,8 +56,9 @@ class BaseModelPage extends React.PureComponent {
         if (!rootModel.name || !rootModel.primaryValue) {
             return null;
         }
-        const otherProps = {caption: modelSchemaProvider.getSchemaByName(detailModelName).getCaption()};
-        return viewCreator.createDetail(detailModelName, rootModel, otherProps);
+
+        return <Detail modelName={detailModelName} rootModel={rootModel} 
+            caption={modelSchemaProvider.getSchemaByName(detailModelName).getCaption()}/>
     }
 
     _onEditComponentChange = (newValue, column) => {

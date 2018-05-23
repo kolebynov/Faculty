@@ -1,34 +1,33 @@
 import React from "react";
-import UrlHelper from "./UrlHelper";
-import { Link } from 'react-router-dom'
-import DataTypes from "../common/DataTypes";
-import modelSchemaProvider from "../schemas/ModelSchemaProvider";
-import modelPageSchemaProvider from "../schemas/ModelPageSchemaProvider";
+import PropTypes from "prop-types";
 import TextField from "material-ui/TextField";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
-import modelUtils from "../utils/ModelUtils";
-import dataTypeConverterProvider from "../common/DataTypeConverterProvider";
-import Detail from "../components/Detail/Detail.jsx";
+import modelUtils from "../../utils/ModelUtils";
+import dataTypeConverterProvider from "../../common/DataTypeConverterProvider";
+import modelSchemaProvider from "../../schemas/ModelSchemaProvider";
+import dataTypes from "../../common/DataTypes";
 
-class ViewCreator {
-    createEditViewForModelValue(value, columnName, schema, model, onChangeHandler) {
+class ModelValueEdit extends React.PureComponent {
+    render() {
+        let { columnName, model, schema, onChange } = this.props;
         const column = schema.getColumnByName(columnName);
+        const value = model[columnName];
         let editComponent = null;
         switch (column.type) {
-            case DataTypes.LOOKUP:
-                editComponent = this.createSelectField(value, column, model, onChangeHandler);
+            case dataTypes.LOOKUP:
+                editComponent = this._renderSelectField(value, column, model, onChange);
                 break;
             default:
                 editComponent = <TextField id={columnName} value={value} onChange={(e, newValue) => 
-                    this._onEditComponentChange(newValue, column, model, onChangeHandler)} 
+                    this._onEditComponentChange(newValue, column, model, onChange)} 
                     floatingLabelText={column.getCaption()} />;
         }
 
         return <div>{editComponent}</div>
     }
 
-    createSelectField(value, column, model, onChangeHandler) {
+    _renderSelectField(value, column, model, onChangeHandler) {
         const referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
         return (
             <SelectField floatingLabelText={column.getCaption()} value={modelUtils.getPrimaryValue(value, referenceSchema)} 
@@ -43,15 +42,20 @@ class ViewCreator {
         );
     }
 
-    createDetail(detailModelName, rootModel, otherProps) {
-        return <Detail modelName={detailModelName} rootModel={rootModel} {...otherProps} />;
-    }
-
     _onEditComponentChange(rawValue, column, model, onChangeHandler) {
         const newValue = dataTypeConverterProvider.getConverter(column.type)
             .fromString(rawValue, column, model);
-        onChangeHandler(newValue, column);
+        if (onChangeHandler) {
+            onChangeHandler(newValue, column);
+        }
     }
 }
 
-export default new ViewCreator();
+ModelValueEdit.propTypes = {
+    columnName: PropTypes.string.isRequired,
+    schema: PropTypes.object.isRequired,
+    model: PropTypes.object.isRequired,
+    onChange: PropTypes.func
+};
+
+export default ModelValueEdit;
