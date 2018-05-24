@@ -18,7 +18,8 @@ class BaseModelSection extends React.PureComponent {
         return (
             <div>
                 {this.renderHeader()}
-                <DataGrid modelName={this.props.modelName} />
+                <DataGrid modelName={this.props.modelName} rowActions={this._getDataGridRowActions()} 
+                    onRowAction={this._onGridRowAction} ref="dataGrid"/>
             </div>
         );
     }
@@ -44,8 +45,45 @@ class BaseModelSection extends React.PureComponent {
         this.context.router.history.push(url);
     }
 
+    removeRow(primaryValue) {
+        this.refs.dataGrid.removeRow(primaryValue);
+    }
+
     _onAddButtonClick = () => {
         this.openEditPage(constants.EMPTY_GUID);
+    }
+
+    _getDataGridRowActions() {
+        return [
+            {
+                component: FlatButton,
+                props: {
+                    label: "Открыть"
+                },
+                actionPropName: "onClick",
+                name: "open"
+            },
+            {
+                component: FlatButton,
+                props: {
+                    label: "Удалить"
+                },
+                actionPropName: "onClick",
+                name: "remove"
+            }
+        ];
+    }
+
+    _onGridRowAction = (actionName, rowPrimaryValue) => {
+        debugger;
+        switch (actionName) {
+            case "open": 
+                this.openEditPage(rowPrimaryValue);
+                break;
+            case "remove":
+                this.removeRow(rowPrimaryValue);
+                break;
+        }
     }
 }
 

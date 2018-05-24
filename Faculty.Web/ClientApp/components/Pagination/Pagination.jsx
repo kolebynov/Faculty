@@ -12,7 +12,16 @@ class Pagination extends React.PureComponent {
         this._onButtonClick = this._onButtonClick.bind(this);
     }
 
+    componentWillReceiveProps(newProps) {
+        if (newProps.initialPage !== this.props.initialPage) {
+            this.setState({
+                currentPage: newProps.initialPage
+            });
+        }
+    }
+
     render() {
+        debugger;
         let startPage = Math.max(1, this.state.currentPage - Math.trunc(this.props.showPagesCount / 2));
         startPage = Math.max(1, startPage + Math.min(0, this.props.pagesCount - (startPage + this.props.showPagesCount - 1)));
         const pagesButtons = [];

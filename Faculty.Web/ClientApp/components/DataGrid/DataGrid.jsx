@@ -41,6 +41,17 @@ class DataGrid extends React.PureComponent {
         );
     }
 
+    removeRow(primaryValue) {
+        let schema = modelSchemaProvider.getSchemaByName(this.props.modelName);
+        new ApiService(schema.resourceName).deleteItem(primaryValue)
+            .then(response => {
+                if (response.success) {
+                    const currentPage = this.state.currentPage;
+                    this._loadData(this.state.data.length > 1 || currentPage === 1 ? currentPage : currentPage - 1);
+                }
+            });
+    }
+
     _renderTable(schema) {
         return (
             <Table>
@@ -49,17 +60,33 @@ class DataGrid extends React.PureComponent {
                         {schema.columns.map(column => (
                             <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
                         ))}
+                        {this.props.rowActions.length > 0 ? <TableHeaderColumn /> : null}
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false}>
                     {this.state.data.map(row => (
-                        <TableRow key={row[schema.primaryColumnName]}>
-                            {schema.columns.map(column => (
-                                <TableRowColumn key={column.name}>
-                                    <ModelValueView columnName={column.name} schema={schema} model={row}/>
-                                </TableRowColumn>
-                            ))}
-                        </TableRow>
+                            <TableRow key={row[schema.primaryColumnName]}>
+                                {schema.columns.map(column => (
+                                    <TableRowColumn key={column.name}>
+                                        <ModelValueView columnName={column.name} schema={schema} model={row}/>
+                                    </TableRowColumn>
+                                ))}
+                                {
+                                    this.props.rowActions.length === 0 ? null :
+                                    <TableRowColumn>
+                                        {this.props.rowActions.map(rowAction => {
+                                            const RowActionComponent = rowAction.component;
+                                            const props = { 
+                                                ...rowAction.props,
+                                                key: `${row[schema.primaryColumnName]}-${rowAction.name}`,
+                                                [rowAction.actionPropName]: () => this.props.onRowAction(rowAction.name, row[schema.primaryColumnName])
+                                            };
+
+                                            return <RowActionComponent {...props}/>
+                                        })}
+                                    </TableRowColumn>
+                                }
+                            </TableRow>
                     ))}
                 </TableBody>
             </Table>
@@ -104,15 +131,22 @@ class DataGrid extends React.PureComponent {
     }
 
     _getItemsPerPage() {
-        return this.props.itemsPerPage || DataGrid.defaultItemsPerPage;
+        return this.props.itemsPerPage;
     }
 }
 
 DataGrid.propTypes = {
     modelName: PropTypes.string.isRequired,
     rootModel: PropTypes.object,
-    itemsPerPage: PropTypes.number
+    itemsPerPage: PropTypes.number,
+    rowActions: PropTypes.array,
+    onRowAction: PropTypes.func 
 };
 DataGrid.defaultItemsPerPage = 30;
+DataGrid.defaultProps = {
+    rowActions: [],
+    itemsPerPage: DataGrid.defaultItemsPerPage,
+    onRowAction: () => {}
+};
 
 export default DataGrid;
