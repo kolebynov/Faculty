@@ -15,7 +15,7 @@ class BaseModelSchemaPage extends BaseModelPage {
         this._loadModel();
     }
 
-    renderFooter() {
+    _renderHeader() {
         return (
             <div>
                 <FlatButton label="Сохранить" onClick={this._save}></FlatButton>

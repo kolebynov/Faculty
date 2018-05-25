@@ -29,17 +29,22 @@ class BaseModelPage extends React.PureComponent {
     render() {
         return (
             <div>
-                {this.renderBody()}
-                {this.renderFooter()}
+                {this._renderHeader()}
+                {this._renderBody()}
+                {this._renderFooter()}
             </div>
         );
     }
 
-    renderBody() {
+    _renderHeader() {
         return null;
     }
 
-    renderFooter() {
+    _renderBody() {
+        return null;
+    }
+
+    _renderFooter() {
         return null;
     }
 

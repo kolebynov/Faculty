@@ -21,7 +21,6 @@ class Pagination extends React.PureComponent {
     }
 
     render() {
-        debugger;
         let startPage = Math.max(1, this.state.currentPage - Math.trunc(this.props.showPagesCount / 2));
         startPage = Math.max(1, startPage + Math.min(0, this.props.pagesCount - (startPage + this.props.showPagesCount - 1)));
         const pagesButtons = [];

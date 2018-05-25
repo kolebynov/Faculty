@@ -13,10 +13,17 @@ import Pagination from "../Pagination/Pagination.jsx";
 import ApiService from "../../services/ApiService";
 import ModelValueView from "../ModelValueView/ModelValueView.jsx";
 
+const gridStates = {
+    IDLE: 0,
+    REMOVING_ROW: 1,
+    LOADING_DATA: 2
+};
+
 class DataGrid extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        this.dataLoadingCount = 0;
         this.state = this._getDefaultState();
     }
     
@@ -42,14 +49,20 @@ class DataGrid extends React.PureComponent {
     }
 
     removeRow(primaryValue) {
-        let schema = modelSchemaProvider.getSchemaByName(this.props.modelName);
-        new ApiService(schema.resourceName).deleteItem(primaryValue)
-            .then(response => {
-                if (response.success) {
-                    const currentPage = this.state.currentPage;
-                    this._loadData(this.state.data.length > 1 || currentPage === 1 ? currentPage : currentPage - 1);
-                }
+        if (this.state.gridState === gridStates.IDLE) {
+            this.setState({
+                gridState: gridStates.REMOVING_ROW
             });
+            let schema = modelSchemaProvider.getSchemaByName(this.props.modelName);
+            new ApiService(schema.resourceName).deleteItem(primaryValue)
+                .then(response => {
+                    this._setNewGridState(gridStates.REMOVING_ROW, gridStates.IDLE);
+                    if (response.success) {
+                        const currentPage = this.state.currentPage;
+                        this._loadData(this.state.data.length > 1 || currentPage === 1 ? currentPage : currentPage - 1);
+                    }
+                });
+        }
     }
 
     _renderTable(schema) {
@@ -101,6 +114,10 @@ class DataGrid extends React.PureComponent {
     _loadCurrentPage = () => this._loadData(this.state.currentPage)
 
     _loadData(page) {
+        this.dataLoadingCount++;
+        this.setState({
+            gridState: gridStates.LOADING_DATA
+        });
         let modelName = this.props.modelName;
         let id = null;
         let linkedResouce = null;
@@ -111,11 +128,17 @@ class DataGrid extends React.PureComponent {
         }
         let apiService = new ApiService(modelSchemaProvider.getSchemaByName(modelName).resourceName);
         apiService.getItems(id, {page: page, rowsCount: this._getItemsPerPage()}, linkedResouce)
-            .then(response => this.setState({
-                data: response.data,
-                pagesCount: response.pagination.totalPages,
-                currentPage: response.pagination.currentPage
-            }));
+            .then(response => {
+                this.dataLoadingCount--;
+                if (this.dataLoadingCount === 0) {
+                    this.setState({
+                        data: response.data,
+                        pagesCount: response.pagination.totalPages,
+                        currentPage: response.pagination.currentPage,
+                    })
+                    this._setNewGridState(gridStates.LOADING_DATA, gridStates.IDLE);
+                }
+            });
     }
 
     _onPageChanged = (newPage) => {
@@ -126,12 +149,21 @@ class DataGrid extends React.PureComponent {
         return {
             data: [],
             pagesCount: 1,
-            currentPage: 1
+            currentPage: 1,
+            gridState: gridStates.IDLE
         };
     }
 
     _getItemsPerPage() {
         return this.props.itemsPerPage;
+    }
+
+    _setNewGridState(neededOldState, newState) {
+        if (this.state.gridState === neededOldState) {
+            this.setState({
+                gridState: newState
+            });
+        }
     }
 }
 

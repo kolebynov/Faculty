@@ -2,7 +2,8 @@ import React from "react";
 import LoginPage from "./pages/LoginPage/LoginPage.jsx";
 import MainPage from "./pages/MainPage/MainPage.jsx";
 import { Switch, Route } from "react-router-dom";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import "./app.css";
 
 const App = () => (
     <MuiThemeProvider>

@@ -75,7 +75,6 @@ class BaseModelSection extends React.PureComponent {
     }
 
     _onGridRowAction = (actionName, rowPrimaryValue) => {
-        debugger;
         switch (actionName) {
             case "open": 
                 this.openEditPage(rowPrimaryValue);
