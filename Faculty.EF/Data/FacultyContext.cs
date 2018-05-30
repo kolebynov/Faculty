@@ -1,9 +1,12 @@
-﻿using Faculty.EFCore.Domain;
+﻿using System;
+using Faculty.EFCore.Domain;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Faculty.EFCore.Data
 {
-    public class FacultyContext : DbContext
+    public class FacultyContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public DbSet<Student> Students { get; set; }
         public DbSet<Group> Groups { get; set; }
