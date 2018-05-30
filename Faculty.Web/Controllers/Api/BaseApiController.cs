@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Faculty.Web.Services.Api;
 
 namespace Faculty.Web.Controllers.Api
 {
@@ -16,7 +17,8 @@ namespace Faculty.Web.Controllers.Api
     public abstract class BaseApiController<TEntity> : Controller
         where TEntity : BaseEntity
     {
-        private readonly IEntityExpressionsBuilder _entityExpressionsBuilder;
+        protected readonly IEntityExpressionsBuilder EntityExpressionsBuilder;
+        protected readonly IApiHelper ApiHelper;
 
         public IRepository<TEntity> EntityRepository { get; }
 
@@ -70,10 +72,11 @@ namespace Faculty.Web.Controllers.Api
             return Json(GetErrorResultFromModelState(ModelState));
         }
 
-        protected BaseApiController(IRepository<TEntity> repository, IEntityExpressionsBuilder entityExpressionsBuilder)
+        protected BaseApiController(IRepository<TEntity> repository, IEntityExpressionsBuilder entityExpressionsBuilder, IApiHelper apiHelper)
         {
             EntityRepository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _entityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
+            EntityExpressionsBuilder = entityExpressionsBuilder ?? throw new ArgumentNullException(nameof(entityExpressionsBuilder));
+            ApiHelper = apiHelper ?? throw new ArgumentNullException(nameof(apiHelper)); ;
         }
 
         protected virtual async Task<ApiResult<IEnumerable<T>>> CreateApiResultFromQueryAsync<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
@@ -96,7 +99,7 @@ namespace Faculty.Web.Controllers.Api
         protected virtual async Task<IEnumerable<T>> GetItemsFromQueryAsync<T>(IQueryable<T> query, Guid id, GetItemsOptions options)
             where T : BaseEntity
         {
-            query = query.Select(_entityExpressionsBuilder.GetDefaultEntitySelectorExpression<T>());
+            query = query.Select(EntityExpressionsBuilder.GetDefaultEntitySelectorExpression<T>());
             if (!Equals(id, Guid.Empty))
             {
                 query = query.Where(entity => entity.Id == id);
@@ -114,10 +117,7 @@ namespace Faculty.Web.Controllers.Api
 
         protected virtual ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
         {
-            IEnumerable<ApiError> errors = modelState.Values
-                .SelectMany(s => s.Errors)
-                .Select(e => new ApiError { Message = e.ErrorMessage });
-            return ApiResult.ErrorResult(errors);
+            return ApiHelper.GetErrorResultFromModelState(modelState);
         }
     }
 }

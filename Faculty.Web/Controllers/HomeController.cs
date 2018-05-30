@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Faculty.Web.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Faculty.Web.Controllers
@@ -12,6 +13,7 @@ namespace Faculty.Web.Controllers
         public HomeController(IMapper mapper)
         { }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

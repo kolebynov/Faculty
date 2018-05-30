@@ -66,27 +66,33 @@ class DataGrid extends React.PureComponent {
     }
 
     _renderTable(schema) {
+        const columnsForDisplay = this._getColumnsForDisplay();
+
         return (
             <Table>
                 <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                     <TableRow>
-                        {schema.columns.map(column => (
-                            <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
-                        ))}
+                        {columnsForDisplay.map(columnName => {
+                            const column = schema.getColumnByName(columnName);
+                            return <TableHeaderColumn key={column.name}>{column.caption || column.name}</TableHeaderColumn>
+                        })}
                         {this.props.rowActions.length > 0 ? <TableHeaderColumn /> : null}
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false}>
                     {this.state.data.map(row => (
                             <TableRow key={row[schema.primaryColumnName]}>
-                                {schema.columns.map(column => (
-                                    <TableRowColumn key={column.name}>
-                                        <ModelValueView columnName={column.name} schema={schema} model={row}/>
-                                    </TableRowColumn>
-                                ))}
+                                {columnsForDisplay.map(columnName => {
+                                    const column = schema.getColumnByName(columnName);
+                                    return (
+                                        <TableRowColumn key={column.name}>
+                                            <ModelValueView columnName={column.name} schema={schema} model={row}/>
+                                        </TableRowColumn>
+                                    );
+                                })}
                                 {
                                     this.props.rowActions.length === 0 ? null :
-                                    <TableRowColumn>
+                                    <TableRowColumn style={{"text-align": "right"}}>
                                         {this.props.rowActions.map(rowAction => {
                                             const RowActionComponent = rowAction.component;
                                             const props = { 
@@ -165,6 +171,13 @@ class DataGrid extends React.PureComponent {
             });
         }
     }
+
+    _getColumnsForDisplay() {
+        const schema = modelSchemaProvider.getSchemaByName(this.props.modelName);
+        return this.props.columnsForDisplay || schema.getColumns()
+            .filter(column => column.name !== schema.primaryColumnName)
+            .map(column => column.name);
+    }
 }
 
 DataGrid.propTypes = {
@@ -172,7 +185,8 @@ DataGrid.propTypes = {
     rootModel: PropTypes.object,
     itemsPerPage: PropTypes.number,
     rowActions: PropTypes.array,
-    onRowAction: PropTypes.func 
+    onRowAction: PropTypes.func,
+    columnsForDisplay: PropTypes.array
 };
 DataGrid.defaultItemsPerPage = 30;
 DataGrid.defaultProps = {

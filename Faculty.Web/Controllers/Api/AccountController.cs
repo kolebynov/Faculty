@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Faculty.EFCore.Services.Users;
+using Faculty.Web.ApiResults;
+using Faculty.Web.Services.Api;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Faculty.Web.Controllers.Api
@@ -14,10 +13,12 @@ namespace Faculty.Web.Controllers.Api
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IApiHelper _apiHelper;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IApiHelper apiHelper)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _apiHelper = apiHelper ?? throw new ArgumentNullException(nameof(apiHelper));
         }
 
         [HttpPost]
@@ -28,21 +29,10 @@ namespace Faculty.Web.Controllers.Api
             if (ModelState.IsValid)
             {
                 UserResult loginResult = await _userService.LoginAsync(loginData);
-                if (loginResult.Success)
-                {
-                    return Redirect(returnUrl ?? "/");
-                }
-
-                ModelState.AddModelError("Email", "Неверный логин или пароль");
+                return Json(loginResult);
             }
 
-
-        }
-
-        [AllowAnonymous]
-        public IActionResult Registration()
-        {
-            return View();
+            return Json(_apiHelper.GetErrorResultFromModelState(ModelState));
         }
 
         [AllowAnonymous]
@@ -53,15 +43,10 @@ namespace Faculty.Web.Controllers.Api
             if (ModelState.IsValid)
             {
                 UserResult registerResult = await _userService.RegisterNewUserAsync(registerData);
-                if (registerResult.Success)
-                {
-                    return RedirectToAction(nameof(Login));
-                }
-
-                foreach (UserError error in registerResult.Errors)
-                    ModelState.AddModelError("", error.Message);
+                return Json(registerResult);
             }
-            return View();
+
+            return Json(_apiHelper.GetErrorResultFromModelState(ModelState));
         }
 
         [HttpPost]
@@ -69,7 +54,9 @@ namespace Faculty.Web.Controllers.Api
         public async Task<IActionResult> Logout()
         {
             await _userService.LogoutAsync();
-            return RedirectToAction(nameof(Login));
+            return Json(new ApiResult {Success = true});
         }
+
+        public async Task<IActionResult> GetCurrentUser() => Json(await _userService.GetCurrentUser());
     }
 }

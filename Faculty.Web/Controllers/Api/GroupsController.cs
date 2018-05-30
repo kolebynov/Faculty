@@ -7,6 +7,7 @@ using Faculty.EFCore.Domain;
 using Faculty.EFCore.Infrastucture;
 using Faculty.Web.ApiResults;
 using Faculty.Web.Model;
+using Faculty.Web.Services.Api;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Faculty.Web.Controllers.Api
@@ -14,8 +15,8 @@ namespace Faculty.Web.Controllers.Api
     [Route("api/groups")]
     public class GroupsController : BaseApiController<Group>
     {
-        public GroupsController(IRepository<Group> repository, IEntityExpressionsBuilder entityExpressionsBuilder)
-            : base(repository, entityExpressionsBuilder)
+        public GroupsController(IRepository<Group> repository, IEntityExpressionsBuilder entityExpressionsBuilder, IApiHelper apiHelper)
+            : base(repository, entityExpressionsBuilder, apiHelper)
         {
         }
 

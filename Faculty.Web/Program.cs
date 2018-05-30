@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Faculty.EFCore.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Faculty.Web.Infrastructure;
-using Faculty.Web.Model;
 using Faculty.EFCore.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Faculty.Web
@@ -22,7 +16,8 @@ namespace Faculty.Web
             var host = BuildWebHost(args);
             using (var scope = host.Services.CreateScope())
             {
-                SeedTestData(scope.ServiceProvider.GetRequiredService<FacultyContext>());
+                SeedTestData(scope.ServiceProvider.GetRequiredService<FacultyContext>(),
+                    scope.ServiceProvider.GetRequiredService<UserManager<User>>());
             }
 
             
@@ -34,9 +29,10 @@ namespace Faculty.Web
                 .UseStartup<Startup>()
                 .Build();
 
-        private static void SeedTestData(FacultyContext context)
+        private static void SeedTestData(FacultyContext context, UserManager<User> userManager)
         {
             SeedFaculty(context);
+            SeedUsers(userManager);
             context.SaveChanges();
         }
 
@@ -88,6 +84,14 @@ namespace Faculty.Web
                     GroupId = group.Id
                 });
             }
+        }
+
+        private static void SeedUsers(UserManager<User> userManager)
+        {
+            userManager.CreateAsync(new User
+            {
+                UserName = "kolebynov"
+            }, "1q1q1q1q").Wait();
         }
     }
 }

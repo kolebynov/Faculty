@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Faculty.EFCore.Domain;
 
 namespace Faculty.EFCore.Services.Users
@@ -9,5 +8,6 @@ namespace Faculty.EFCore.Services.Users
         Task<UserResult> LoginAsync(LoginData loginData);
         Task LogoutAsync();
         Task<UserResult> RegisterNewUserAsync(RegisterUserData registerUserData);
+        Task<User> GetCurrentUser();
     }
 }

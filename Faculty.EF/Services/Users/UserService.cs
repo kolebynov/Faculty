@@ -56,6 +56,8 @@ namespace Faculty.EFCore.Services.Users
             return FromIdentityResult(await _userManager.CreateAsync(newUser, registerUserData.Password));
         }
 
+        public async Task<User> GetCurrentUser() => await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
         private UserResult FromSignInResult(SignInResult signInResult) => new UserResult
         {
             Success = signInResult.Succeeded
@@ -68,7 +70,7 @@ namespace Faculty.EFCore.Services.Users
             {
                 Code = e.Code,
                 Message = e.Description
-            })
+            }),
         };
 
         private User CreateNewUser(RegisterUserData registerUserData) => new User

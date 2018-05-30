@@ -1,5 +1,7 @@
 import queryString from "query-string";
 
+const xsrfMethods = ["POST", "PUT", "DELETE"];
+
 class ApiService {
     constructor(resourceName) {
         this.apiRoute = `/api/${resourceName}`;
@@ -37,6 +39,10 @@ class ApiService {
         let config = Object.assign({}, this._defaultRequestOptions, { method: method });
         if (method !== "GET" && data) {
             config.body = JSON.stringify(data);
+        }
+        
+        if (xsrfMethods.indexOf(method) > -1) {
+            config.headers.RequestVerificationToken = window.xsrfToken;
         }
         return config;
     }
