@@ -1,16 +1,21 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage/LoginPage.jsx";
 import MainPage from "./pages/MainPage/MainPage.jsx";
+import LoginPage from "./pages/LoginPage/LoginPage.jsx";
 import { Switch, Route } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import urlHelper from "./utils/UrlHelper";
+import { GlobalHistory } from "./common/History";
 import "./app.css";
 
 const App = () => (
     <MuiThemeProvider>
-        <Switch>
-            <Route path = "/login" component = {LoginPage} />
-            <Route path = "/" component = {MainPage} />
-        </Switch>
+        <div>
+            <GlobalHistory />
+            <Switch>
+                <Route path={urlHelper.getLoginPagePath()} component={LoginPage} />
+                <Route path="/" component={MainPage} />
+            </Switch>
+        </div>
     </MuiThemeProvider>
 )
 

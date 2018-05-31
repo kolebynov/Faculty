@@ -57,10 +57,8 @@ class DataGrid extends React.PureComponent {
             new ApiService(schema.resourceName).deleteItem(primaryValue)
                 .then(response => {
                     this._setNewGridState(gridStates.REMOVING_ROW, gridStates.IDLE);
-                    if (response.success) {
-                        const currentPage = this.state.currentPage;
-                        this._loadData(this.state.data.length > 1 || currentPage === 1 ? currentPage : currentPage - 1);
-                    }
+                    const currentPage = this.state.currentPage;
+                    this._loadData(this.state.data.length > 1 || currentPage === 1 ? currentPage : currentPage - 1);
                 });
         }
     }

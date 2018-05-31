@@ -31,7 +31,7 @@ namespace Faculty.EFCore.Services.Users
         public async Task<UserResult> LoginAsync(LoginData loginData)
         {
             loginData.CheckArgumentNull(nameof(loginData));
-            User user = await _userManager.FindByEmailAsync(loginData.Email);
+            User user = await _userManager.FindByNameAsync(loginData.UserName);
             UserResult loginResult = new UserResult { Success = false };
             if (user != null)
             {

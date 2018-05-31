@@ -1,16 +1,10 @@
+import BaseService from "./BaseService";
 import queryString from "query-string";
 
-const xsrfMethods = ["POST", "PUT", "DELETE"];
-
-class ApiService {
+class ApiService extends BaseService {
     constructor(resourceName) {
+        super();
         this.apiRoute = `/api/${resourceName}`;
-        this._defaultRequestOptions = {
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        };
     }
 
     getItems(id, options, linkedResouceName) {
@@ -31,20 +25,14 @@ class ApiService {
     }
 
     _request(url, method = "GET", data) {
-        return fetch(url, this._getRequestConfig(method, data))
-            .then(response => response.json());
-    }
+        return super._request(url, method, data)
+            .then(response => {
+                if (!response.success) {
+                    throw new ApiException(response.errors);
+                }
 
-    _getRequestConfig(method = "GET", data) {
-        let config = Object.assign({}, this._defaultRequestOptions, { method: method });
-        if (method !== "GET" && data) {
-            config.body = JSON.stringify(data);
-        }
-        
-        if (xsrfMethods.indexOf(method) > -1) {
-            config.headers.RequestVerificationToken = window.xsrfToken;
-        }
-        return config;
+                return response;
+            });
     }
 }
 

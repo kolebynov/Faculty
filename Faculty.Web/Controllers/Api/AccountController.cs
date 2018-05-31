@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Faculty.Web.Controllers.Api
 {
     [Produces("application/json")]
-    [Route("api/Account")]
+    [Route("api/account")]
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
@@ -21,10 +21,10 @@ namespace Faculty.Web.Controllers.Api
             _apiHelper = apiHelper ?? throw new ArgumentNullException(nameof(apiHelper));
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginData loginData)
+        public async Task<IActionResult> Login([FromBody] LoginData loginData)
         {
             if (ModelState.IsValid)
             {
@@ -36,9 +36,9 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("registration")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registration(RegisterUserData registerData)
+        public async Task<IActionResult> Registration([FromBody] RegisterUserData registerData)
         {
             if (ModelState.IsValid)
             {
@@ -49,7 +49,7 @@ namespace Faculty.Web.Controllers.Api
             return Json(_apiHelper.GetErrorResultFromModelState(ModelState));
         }
 
-        [HttpPost]
+        [HttpPost("logout")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {

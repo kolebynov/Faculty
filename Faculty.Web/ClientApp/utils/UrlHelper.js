@@ -22,6 +22,14 @@ class UrlHelper {
             .replace(new RegExp(`:${this.primaryColumnName}`), primaryColumnValue)
             .replace(new RegExp(`:${this.resourceName}`), modelSchemaProvider.getSchemaByName(modelName).resourceName);
     }
+
+    getLoginPageUrl() {
+        return "/login";
+    }
+
+    getLoginPagePath() {
+        return this.getLoginPageUrl();
+    }
 }
 
 export default new UrlHelper();
