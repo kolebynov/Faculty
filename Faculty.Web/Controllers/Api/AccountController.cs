@@ -22,7 +22,6 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpPost("login")]
-        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginData loginData)
         {
@@ -37,7 +36,6 @@ namespace Faculty.Web.Controllers.Api
 
         [AllowAnonymous]
         [HttpPost("registration")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registration([FromBody] RegisterUserData registerData)
         {
             if (ModelState.IsValid)
@@ -50,7 +48,6 @@ namespace Faculty.Web.Controllers.Api
         }
 
         [HttpPost("logout")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _userService.LogoutAsync();

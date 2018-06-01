@@ -93,4 +93,8 @@ BaseModelPage.propTypes = {
     modelSchema: PropTypes.object.isRequired
 };
 
+BaseModelPage.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
 export default BaseModelPage;

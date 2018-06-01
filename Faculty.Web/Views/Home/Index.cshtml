@@ -2,25 +2,12 @@
     Layout = null;
 }
 
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf;
-@functions
-{
-
-    public string GetXsrfToken()
-    {
-        return Xsrf.GetAndStoreTokens(Context).RequestToken;
-    }
-
-}
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
-    <script>
-        window.xsrfToken = "@GetXsrfToken()";
-    </script>
 </head>
 <body>
     <div id="app"></div>

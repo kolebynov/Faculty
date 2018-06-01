@@ -1,5 +1,6 @@
 import BaseService from "./BaseService";
 import queryString from "query-string";
+import ApiException from "../exceptions/ApiException";
 
 class ApiService extends BaseService {
     constructor(resourceName) {

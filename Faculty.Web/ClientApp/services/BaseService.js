@@ -1,8 +1,7 @@
 import getHistory from "../common/History";
 import urlHelper from "../utils/UrlHelper";
-import ApiException from "../exceptions/ApiException";
+import cookieUtils from "../utils/CookieUtils";
 
-const xsrfMethods = ["POST", "PUT", "DELETE"];
 const statusCodes = {
     UNAUTHORIZED: 401
 };
@@ -18,8 +17,8 @@ class BaseService {
     _request(url, method = "GET", data) {
         return fetch(url, this._getRequestConfig(method, data))
             .then(response => {
-                if (response.status === statusCodes.UNAUTHORIZED) {
-                    getHistory().push(urlHelper.getLoginPageUrl());
+                if (response.status === statusCodes.UNAUTHORIZED && window.location.pathname !== urlHelper.getLoginPagePath()) {
+                    getHistory().push(urlHelper.getLoginPageUrl(window.location.pathname));
                 }
                 
                 return response.json();
@@ -32,9 +31,6 @@ class BaseService {
             config.body = JSON.stringify(data);
         }
         
-        if (xsrfMethods.indexOf(method) > -1) {
-            config.headers.RequestVerificationToken = window.xsrfToken;
-        }
         return config;
     }
 }

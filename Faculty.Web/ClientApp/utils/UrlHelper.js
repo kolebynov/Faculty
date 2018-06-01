@@ -3,6 +3,7 @@ import modelSchemaProvider from "../schemas/ModelSchemaProvider";
 class UrlHelper {
     primaryColumnName = "primaryColumnValue";
     resourceName = "resourceName";
+    returnUrl = "returnUrl"
 
     getPathForModelSection() {
         return `/section/:${this.resourceName}`;
@@ -23,12 +24,12 @@ class UrlHelper {
             .replace(new RegExp(`:${this.resourceName}`), modelSchemaProvider.getSchemaByName(modelName).resourceName);
     }
 
-    getLoginPageUrl() {
-        return "/login";
+    getLoginPageUrl(returnUrl = "/") {
+        return `${this.getLoginPagePath()}?${this.returnUrl}=${returnUrl}`;
     }
 
     getLoginPagePath() {
-        return this.getLoginPageUrl();
+        return `/login`;
     }
 }
 

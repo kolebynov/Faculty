@@ -6,6 +6,8 @@ import dataTypes from "../../common/DataTypes";
 import BaseModelPage from "../../components/modelPages/BaseModelPage/BaseModelPage.jsx";
 import loginService from "../../services/LoginService";
 import FlatButton from 'material-ui/FlatButton';
+import urlHelper from "../../utils/UrlHelper";
+import queryString from "query-string";
 
 class LoginPage extends BaseModelPage {
     render() {
@@ -22,8 +24,13 @@ class LoginPage extends BaseModelPage {
     }
 
     _onLoginButtonClick = () => {
-        debugger;
-        loginService.login(this.state.model);
+        loginService.login(this.state.model)
+            .then(response => {
+                if (response.success) {      
+                    const returnUrl = queryString.parse(this.props.location.search)[urlHelper.returnUrl] || "/";
+                    this.context.router.history.push(returnUrl);
+                }
+            });
     };
 }
 

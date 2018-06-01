@@ -90,7 +90,7 @@ class DataGrid extends React.PureComponent {
                                 })}
                                 {
                                     this.props.rowActions.length === 0 ? null :
-                                    <TableRowColumn style={{"text-align": "right"}}>
+                                    <TableRowColumn style={{"textAlign": "right"}}>
                                         {this.props.rowActions.map(rowAction => {
                                             const RowActionComponent = rowAction.component;
                                             const props = { 
