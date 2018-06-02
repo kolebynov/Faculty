@@ -29,7 +29,7 @@ class BaseModelSchemaPage extends BaseModelPage {
             new ApiService(this.props.modelSchema.resourceName)
                 .getItems(this.props.primaryColumnValue)
                 .then(response => this.setState({
-                    model: { ...this.state.model, ...response.data[0] }
+                    model: { ...response.data[0], ...this.state.model }
                 }));
         }
     }

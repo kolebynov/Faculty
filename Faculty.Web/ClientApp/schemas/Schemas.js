@@ -82,6 +82,24 @@ const schemas = [
                 keyColumnName: "facultyId"
             })
         ]
+    }),
+    new ModelSchema({
+        name: "Faculty",
+        caption: "Факультеты",
+        primaryColumnName: "id",
+        displayColumnName: "name",
+        resourceName: "faculties",
+        columns: [
+            new ModelColumnSchema({
+                name: "id",
+                type: DataTypes.TEXT
+            }),
+            new ModelColumnSchema({
+                name: "name",
+                type: DataTypes.TEXT,
+                caption: "Имя"
+            })
+        ]
     })
 ];
 

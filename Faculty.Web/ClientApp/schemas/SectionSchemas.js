@@ -6,6 +6,14 @@ const schemas = [
     {
         modelName: "Group",
         caption: "Группы"
+    },
+    {
+        modelName: "Specialty",
+        caption: "Специальности"
+    },
+    {
+        modelName: "Faculty",
+        caption: "Факультеты"
     }
 ];
 

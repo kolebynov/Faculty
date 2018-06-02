@@ -7,6 +7,9 @@ import Pagination from "../../Pagination/Pagination.jsx";
 import constants from "../../../utils/Constants";
 import FlatButton from 'material-ui/FlatButton';
 import urlHelper from "../../../utils/UrlHelper";
+import modelPageSchemaProvider from "../../../schemas/ModelPageSchemaProvider";
+import OpenPageRowAction from "../../gridRowActions/OpenPageRowAcion/OpenPageRowAcion.jsx";
+import RemoveRowRowAction from "../../gridRowActions/RemoveRowRowAction/RemoveRowRowAction.jsx";
 
 class BaseModelSection extends React.PureComponent {
     constructor(props) {
@@ -18,8 +21,7 @@ class BaseModelSection extends React.PureComponent {
         return (
             <div>
                 {this.renderHeader()}
-                <DataGrid modelName={this.props.modelName} rowActions={this._getDataGridRowActions()} 
-                    onRowAction={this._onGridRowAction} ref="dataGrid"/>
+                <DataGrid modelName={this.props.modelName} rowActions={this._getDataGridRowActions()}/>
             </div>
         );
     }
@@ -45,44 +47,29 @@ class BaseModelSection extends React.PureComponent {
         this.context.router.history.push(url);
     }
 
-    removeRow(primaryValue) {
-        this.refs.dataGrid.removeRow(primaryValue);
-    }
-
     _onAddButtonClick = () => {
         this.openEditPage(constants.EMPTY_GUID);
     }
 
     _getDataGridRowActions() {
-        return [
-            {
-                component: FlatButton,
+        const actions = [];
+        if (modelPageSchemaProvider.findSchemaByModelName(this.props.modelName)) {
+            actions.push({
+                component: OpenPageRowAction,
                 props: {
                     label: "Открыть"
-                },
-                actionPropName: "onClick",
-                name: "open"
-            },
-            {
-                component: FlatButton,
-                props: {
-                    label: "Удалить"
-                },
-                actionPropName: "onClick",
-                name: "remove"
-            }
-        ];
-    }
-
-    _onGridRowAction = (actionName, rowPrimaryValue) => {
-        switch (actionName) {
-            case "open": 
-                this.openEditPage(rowPrimaryValue);
-                break;
-            case "remove":
-                this.removeRow(rowPrimaryValue);
-                break;
+                }
+            });
         }
+        
+        actions.push({
+            component: RemoveRowRowAction,
+            props: {
+                label: "Удалить"
+            }
+        });
+
+        return actions;
     }
 }
 

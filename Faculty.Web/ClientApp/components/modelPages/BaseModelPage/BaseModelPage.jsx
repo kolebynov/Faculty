@@ -6,6 +6,7 @@ import DataTypes from "../../../common/DataTypes";
 import ApiService from "../../../services/ApiService";
 import ModelValueEdit from "../../ModelValueEdit/ModelValueEdit.jsx";
 import Detail from "../../Detail/Detail.jsx";
+import "./BaseModelPage.css";
 
 class BaseModelPage extends React.PureComponent {
     constructor(props) {
@@ -62,8 +63,13 @@ class BaseModelPage extends React.PureComponent {
             return null;
         }
 
-        return <Detail modelName={detailModelName} rootModel={rootModel} 
-            caption={modelSchemaProvider.getSchemaByName(detailModelName).getCaption()}/>
+        return (
+            <div className="detail-wrapper">
+                <Detail className="detail-wrapper" modelName={detailModelName} rootModel={rootModel} 
+                    caption={modelSchemaProvider.getSchemaByName(detailModelName).getCaption()}/>
+            </div>
+            
+        );
     }
 
     _onEditComponentChange = (newValue, column) => {

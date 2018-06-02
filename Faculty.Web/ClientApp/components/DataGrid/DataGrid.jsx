@@ -95,8 +95,10 @@ class DataGrid extends React.PureComponent {
                                             const RowActionComponent = rowAction.component;
                                             const props = { 
                                                 ...rowAction.props,
-                                                key: `${row[schema.primaryColumnName]}-${rowAction.name}`,
-                                                [rowAction.actionPropName]: () => this.props.onRowAction(rowAction.name, row[schema.primaryColumnName])
+                                                key: `${row[schema.primaryColumnName]}-${rowAction.component.name}`,
+                                                grid: this,
+                                                model: row,
+                                                modelName: this.props.modelName
                                             };
 
                                             return <RowActionComponent {...props}/>
@@ -183,7 +185,6 @@ DataGrid.propTypes = {
     rootModel: PropTypes.object,
     itemsPerPage: PropTypes.number,
     rowActions: PropTypes.array,
-    onRowAction: PropTypes.func,
     columnsForDisplay: PropTypes.array
 };
 DataGrid.defaultItemsPerPage = 30;

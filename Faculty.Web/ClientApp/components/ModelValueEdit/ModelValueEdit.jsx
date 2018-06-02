@@ -19,7 +19,7 @@ class ModelValueEdit extends React.PureComponent {
                 editComponent = this._renderSelectField(value, column, model, onChange);
                 break;
             default:
-                editComponent = <TextField id={columnName} value={value} onChange={(e, newValue) => 
+                editComponent = <TextField id={columnName} value={value || ""} onChange={(e, newValue) => 
                     this._onEditComponentChange(newValue, column, model, onChange)} 
                     floatingLabelText={column.getCaption()} />;
         }
