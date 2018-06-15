@@ -1,6 +1,5 @@
-class ApiException extends Error {
+class ApiException {
     constructor(apiErrors) {
-        super();
         this._apiErrors = apiErrors;
     }
 
@@ -13,7 +12,7 @@ class ApiException extends Error {
     }
 
     _createErrorString() {
-        this.getErrors().join("\n");
+        return this.getErrors().map(err => err.message).join("\n");
     }
 }
 

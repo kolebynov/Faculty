@@ -19,9 +19,10 @@ class ModelValueEdit extends React.PureComponent {
                 editComponent = this._renderSelectField(value, column, model, onChange);
                 break;
             default:
+                const error = this._getErrorFromModel(model, column);
                 editComponent = <TextField id={columnName} value={value || ""} onChange={(e, newValue) => 
                     this._onEditComponentChange(newValue, column, model, onChange)} 
-                    floatingLabelText={column.getCaption()} />;
+                    floatingLabelText={column.getCaption()} errorText={(error || {}).message}/>;
         }
 
         return <div>{editComponent}</div>
@@ -29,9 +30,10 @@ class ModelValueEdit extends React.PureComponent {
 
     _renderSelectField(value, column, model, onChangeHandler) {
         const referenceSchema = modelSchemaProvider.getSchemaByName(column.referenceSchemaName);
+        const error = this._getErrorFromModel(model, column);
         return (
             <SelectField floatingLabelText={column.getCaption()} value={modelUtils.getPrimaryValue(value, referenceSchema)} 
-                onChange={(e, index, newValue) => this._onEditComponentChange(newValue, column, model, onChangeHandler)}>
+                onChange={(e, index, newValue) => this._onEditComponentChange(newValue, column, model, onChangeHandler)} errorText={(error || {}).message}>
                 {modelUtils.getLookupCollection(model, column.name).map(lookupValue => {
                     const primaryValue = modelUtils.getPrimaryValue(lookupValue, referenceSchema);
                     return (
@@ -48,6 +50,15 @@ class ModelValueEdit extends React.PureComponent {
         if (onChangeHandler) {
             onChangeHandler(newValue, column);
         }
+    }
+
+    _getErrorFromModel(model, column) {
+        const columnName = column.keyColumnName || column.name;
+        if (model.errors) {
+            return model.errors.find(err => err.key.toLowerCase() === columnName.toLowerCase());
+        }
+
+        return null;
     }
 }
 

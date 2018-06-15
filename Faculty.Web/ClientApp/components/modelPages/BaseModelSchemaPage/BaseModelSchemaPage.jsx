@@ -10,6 +10,14 @@ import FlatButton from 'material-ui/FlatButton';
 import constants from "../../../utils/Constants";
 
 class BaseModelSchemaPage extends BaseModelPage {
+    constructor() {
+        super(...arguments);
+
+        if (this._isEmptyGuid(this.props.primaryColumnValue)) {
+            this.state.hasChanges = true;
+        }
+    }
+
     componentWillMount() {
         super.componentWillMount();
         this._loadModel();
@@ -30,12 +38,7 @@ class BaseModelSchemaPage extends BaseModelPage {
                 .getItems(this.props.primaryColumnValue)
                 .then(response => this.setState({
                     model: { ...response.data[0], ...this.state.model }
-                }), (err) => {
-                    debugger;
-                    this.setState({
-                        error: err
-                    });
-                });
+                }));
         }
     }
 
@@ -51,7 +54,13 @@ class BaseModelSchemaPage extends BaseModelPage {
             else {
                 updatePromise = apiService.addItem(model);
             }
-            updatePromise.then(response => this._back());
+            updatePromise
+                .then(response => this._back())
+                .catch(err => {
+                    this.setState({
+                        model: { ...this.state.model, errors: err.getErrors() }
+                    });
+                });
         }
         else {
             this._back();

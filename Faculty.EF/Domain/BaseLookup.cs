@@ -6,7 +6,7 @@ namespace Faculty.EFCore.Domain
     public abstract class BaseLookup : BaseEntity
     {
         [MaxLength(250)]
-        [Required]
+        [Required(ErrorMessage = "Имя обязательно для заполнения")]
         public string Name { get; set; }
     }
 }

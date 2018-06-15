@@ -9,9 +9,14 @@ namespace Faculty.Web.Services.Api
     {
         public ApiResult GetErrorResultFromModelState(ModelStateDictionary modelState)
         {
-            IEnumerable<ApiError> errors = modelState.Values
-                .SelectMany(s => s.Errors)
-                .Select(e => new ApiError { Message = e.ErrorMessage });
+            IEnumerable<ApiError> errors = modelState
+                .Where(pair => pair.Value.Errors.Count > 0)
+                .Select(pair => new ApiError
+                {
+                    Key = pair.Key,
+                    Message = string.Join("\n", pair.Value.Errors.Select(err => err.ErrorMessage))
+                });
+
             return ApiResult.ErrorResult(errors);
         }
     }
