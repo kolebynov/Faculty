@@ -1,5 +1,6 @@
-class ApiException {
+class ApiException extends Error {
     constructor(apiErrors) {
+        super();
         this._apiErrors = apiErrors;
     }
 

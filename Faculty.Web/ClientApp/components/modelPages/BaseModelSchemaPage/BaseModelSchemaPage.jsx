@@ -30,7 +30,12 @@ class BaseModelSchemaPage extends BaseModelPage {
                 .getItems(this.props.primaryColumnValue)
                 .then(response => this.setState({
                     model: { ...response.data[0], ...this.state.model }
-                }));
+                }), (err) => {
+                    debugger;
+                    this.setState({
+                        error: err
+                    });
+                });
         }
     }
 

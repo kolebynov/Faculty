@@ -45,9 +45,7 @@ module.exports = (env) => {
                     moduleFilenameTemplate: path.relative(bundleOutputDir, "[resourcePath]") // Point sourcemap entries to the original file locations on disk
                 })
             ] : [
-                new webpack.optimize.UglifyJsPlugin({
-                    comments: false
-                }),
+                new webpack.optimize.UglifyJsPlugin(),
                 new ExtractTextPlugin("site.css")
             ])
         }

@@ -6,6 +6,7 @@ namespace Faculty.EFCore.Domain
     public abstract class BaseLookup : BaseEntity
     {
         [MaxLength(250)]
+        [Required]
         public string Name { get; set; }
     }
 }
